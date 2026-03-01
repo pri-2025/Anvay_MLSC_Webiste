@@ -29,6 +29,46 @@
   }
 }
 
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 0.8;
+  }
+
+  80% {
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: translateY(-50vh) translateX(50px);
+    opacity: 0;
+  }
+}
+
+.animate-floatUp {
+  animation: floatUp linear infinite;
+}
+
+@keyframes float-node {
+
+  0%,
+  100% {
+    transform: translate(-50%, -50%);
+  }
+
+  50% {
+    transform: translate(-50%, calc(-50% - 15px));
+  }
+}
+
+.animate-float-node {
+  animation: float-node 4s ease-in-out infinite;
+}
+
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out;
 }

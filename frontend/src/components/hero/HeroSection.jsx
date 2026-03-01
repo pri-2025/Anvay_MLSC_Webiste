@@ -100,12 +100,13 @@ const HeroSection = () => {
                 </h1>
 
                 <h2
-                    className="text-xl md:text-3xl font-light mb-8 tracking-[0.15em] uppercase"
+                    className="text-xl md:text-3xl font-bold mb-8 tracking-[0.15em] uppercase"
                     style={{
                         fontFamily: "'Rajdhani', 'Orbitron', sans-serif",
-                        color: '#e2d5c5',
+                        color: '#F9A24D',
                         animation: 'slideUp 0.8s ease-out both',
                         animationDelay: '0.8s',
+                        textShadow: '0 0 15px rgba(249,162,77,0.6), 0 0 30px rgba(249,162,77,0.4)',
                     }}
                 >
                     The BlockCity Edition
@@ -114,9 +115,10 @@ const HeroSection = () => {
                 <p
                     className="text-base md:text-lg max-w-2xl mx-auto mb-12 leading-relaxed"
                     style={{
-                        color: '#9ca3af',
+                        color: '#ffffff',
                         animation: 'slideUp 0.8s ease-out both',
                         animationDelay: '1.1s',
+                        textShadow: '0 0 10px rgba(255,255,255,0.4), 0 0 20px rgba(255,255,255,0.2)',
                     }}
                 >
                     Navigate through rooms, solve challenges, earn points, and rise through the tiers to become BlockCity's top citizen.
