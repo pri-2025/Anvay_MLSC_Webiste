@@ -1,27 +1,70 @@
 import React, { useState } from 'react';
-import RoomStatusBoard from './RoomStatusBoard';
-import AddScoreModal from './AddScoreModal';
+import { useAuth } from '../../context/AuthContext';
+import RoomSelection from './RoomSelection';
+import RoomSetupModal from './RoomSetupModal';
+import RoomControlDashboard from './RoomControlDashboard';
 
 const AdminDashboard = () => {
-    const [showModal, setShowModal] = useState(false);
+    const { logout, admin } = useAuth();
+    const [selectedRoom, setSelectedRoom] = useState(null);
+    const [setupRoom, setSetupRoom] = useState(null); // room waiting for setup input
+    const [roomConfig, setRoomConfig] = useState(null); // { totalParticipants, capacity }
 
+    const handleRoomClick = (room) => {
+        setSetupRoom(room); // show setup modal
+    };
+
+    const handleSetupConfirm = (config) => {
+        setRoomConfig(config);
+        setSelectedRoom(setupRoom);
+        setSetupRoom(null);
+    };
+
+    const handleBack = () => {
+        setSelectedRoom(null);
+        setRoomConfig(null);
+    };
+
+    // Room selected + config set → show room control dashboard
+    if (selectedRoom && roomConfig) {
+        return (
+            <RoomControlDashboard
+                room={selectedRoom}
+                roomConfig={roomConfig}
+                onBack={handleBack}
+            />
+        );
+    }
+
+    // No room selected → show room selection + optional setup modal
     return (
-        <div className="max-w-6xl mx-auto py-8 px-4">
-            <div className="flex items-center justify-between mb-8">
-                <h1 className="text-3xl font-heading font-bold text-white">
-                    ⚙️ Admin Dashboard
-                </h1>
+        <div className="min-h-screen bg-primary">
+            {/* Top Bar */}
+            <div className="max-w-6xl mx-auto px-4 pt-6 flex items-center justify-between">
+                <div>
+                    <p className="text-gray-400 text-sm">
+                        Welcome back, <span className="text-white font-medium">{admin?.name || 'Admin'}</span>
+                    </p>
+                </div>
                 <button
-                    onClick={() => setShowModal(true)}
-                    className="px-6 py-3 bg-highlight text-white font-semibold rounded-lg hover:bg-red-600 transition-colors"
+                    onClick={logout}
+                    className="px-5 py-2 border border-gray-600 text-gray-300 text-sm font-semibold rounded-lg hover:bg-gray-700 hover:text-white transition-colors"
                 >
-                    + Add Score
+                    Logout
                 </button>
             </div>
 
-            <RoomStatusBoard />
+            {/* Room Selection */}
+            <RoomSelection onSelectRoom={handleRoomClick} />
 
-            {showModal && <AddScoreModal onClose={() => setShowModal(false)} />}
+            {/* Setup Modal */}
+            {setupRoom && (
+                <RoomSetupModal
+                    room={setupRoom}
+                    onConfirm={handleSetupConfirm}
+                    onCancel={() => setSetupRoom(null)}
+                />
+            )}
         </div>
     );
 };
