@@ -60,11 +60,23 @@ export default function AnvayaLanding() {
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-6 pt-8">
-                        <button className="px-8 py-4 bg-transparent border border-[#F9A24D] text-[#F9A24D] font-bold tracking-wider rounded-xl shadow-[0_0_25px_rgba(249,162,77,0.25)] hover:shadow-[0_0_35px_rgba(249,162,77,0.4)] hover:scale-105 transition-all duration-300">
-                            VIEW LEADERBOARD
+                        <button
+                            className="px-8 py-4 bg-transparent border border-[#F9A24D] text-[#F9A24D] font-bold tracking-wider rounded-xl shadow-[0_0_25px_rgba(249,162,77,0.25)] hover:shadow-[0_0_35px_rgba(249,162,77,0.4)] hover:scale-105 transition-all duration-300"
+                            onClick={() => window.location.href = '/participant'}
+                        >
+                            Participant
                         </button>
-                        <button className="px-8 py-4 bg-transparent border border-white/20 text-white font-bold tracking-wider rounded-xl hover:bg-white/5 hover:border-white/50 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-all duration-300">
-                            FIND YOUR BADGE
+                        <button
+                            className="px-8 py-4 bg-transparent border border-white/20 text-white font-bold tracking-wider rounded-xl hover:bg-white/5 hover:border-white/50 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-all duration-300"
+                            onClick={() => window.location.href = '/admin'}
+                        >
+                            Admin
+                        </button>
+                        <button
+                            className="px-8 py-4 bg-transparent border border-gray-400 text-gray-200 font-bold tracking-wider rounded-xl hover:bg-gray-700 hover:text-white transition-all duration-300"
+                            onClick={() => document.getElementById('about-us')?.scrollIntoView({ behavior: 'smooth' })}
+                        >
+                            About Us
                         </button>
                     </div>
                 </div>

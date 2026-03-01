@@ -15,9 +15,12 @@ const Navbar = () => {
                     <a href="#leaderboard" className="text-gray-300 hover:text-white transition-colors">
                         Leaderboard
                     </a>
-                    <a href="#badge-lookup" className="text-gray-300 hover:text-white transition-colors">
-                        Badge
+                    <a href="#about-us" className="text-gray-300 hover:text-white transition-colors">
+                        About Us
                     </a>
+                    <Link to="/participant" className="text-gray-300 hover:text-highlight transition-colors">
+                        Participant
+                    </Link>
                     <Link to="/admin" className="text-gray-300 hover:text-highlight transition-colors">
                         Admin
                     </Link>

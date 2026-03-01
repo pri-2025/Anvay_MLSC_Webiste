@@ -36,8 +36,8 @@ const Footer = () => {
                                 </a>
                             </li>
                             <li>
-                                <a href="#badge-lookup" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm">
-                                    <IdCard size={14} /> Badge Lookup
+                                <a href="#about-us" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm">
+                                    About Us
                                 </a>
                             </li>
                             <li>

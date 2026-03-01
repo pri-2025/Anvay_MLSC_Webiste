@@ -52,16 +52,22 @@ const HeroSection = () => {
 
                 <div className="flex gap-4 justify-center flex-wrap">
                     <a
-                        href="#leaderboard"
+                        href="/participant"
                         className="px-8 py-3.5 bg-highlight text-white font-semibold rounded-lg hover:bg-red-600 hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300 text-sm md:text-base"
                     >
-                        View Leaderboard
+                        Participant
                     </a>
                     <a
-                        href="#badge-lookup"
+                        href="/admin"
                         className="px-8 py-3.5 border border-highlight/50 text-highlight font-semibold rounded-lg hover:bg-highlight hover:text-white hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300 text-sm md:text-base"
                     >
-                        Find Your Badge
+                        Admin
+                    </a>
+                    <a
+                        href="#about-us"
+                        className="px-8 py-3.5 border border-gray-400 text-gray-200 font-semibold rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-300 text-sm md:text-base"
+                    >
+                        About Us
                     </a>
                 </div>
             </div>
