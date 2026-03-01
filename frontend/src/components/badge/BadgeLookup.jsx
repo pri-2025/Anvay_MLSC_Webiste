@@ -18,8 +18,20 @@ const BadgeLookup = () => {
         setParticipant(null);
 
         try {
-            const data = await getParticipantByCitizenId(citizenId.trim());
-            setParticipant(data);
+            // HARDCODED OVERRIDE FOR PREVIEW
+            setTimeout(() => {
+                setParticipant({
+                    name: 'Alex Chen',
+                    citizenId: citizenId.trim() || 'BC-0x7A2F',
+                    tier: 'Gold',
+                    totalPoints: 8950,
+                    roomsCompleted: 4
+                });
+                setLoading(false);
+            }, 600);
+
+            // const data = await getParticipantByCitizenId(citizenId.trim());
+            // setParticipant(data);
         } catch (err) {
             setError('Citizen not found. Check your ID and try again.');
         } finally {
@@ -28,7 +40,7 @@ const BadgeLookup = () => {
     };
 
     return (
-        <section id="badge-lookup" className="py-20 px-4 bg-[#0a0a1a] relative z-20">
+        <section id="badge-lookup" className="py-20 px-4 bg-transparent relative z-20">
             <div className="max-w-2xl mx-auto text-center">
                 <div className="flex items-center justify-center gap-3 mb-3">
                     <IdCard size={32} className="text-[#F9A24D]" />

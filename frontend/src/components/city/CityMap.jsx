@@ -76,11 +76,10 @@ const CityNode = ({ room, isSelected, onClick, connections }) => {
 
     return (
         <div
-            className="absolute cursor-pointer transition-all duration-500 z-20"
+            className="absolute cursor-pointer transition-all duration-500 z-20 animate-float-node"
             style={{
                 left: `${x}%`,
                 top: `${y}%`,
-                transform: `translate(-50%, -50%)`,
             }}
             onClick={onClick}
             onMouseEnter={() => setHovered(true)}
@@ -95,9 +94,9 @@ const CityNode = ({ room, isSelected, onClick, connections }) => {
                     left: '50%',
                     top: '50%',
                     transform: 'translate(-50%, -50%)',
-                    border: `1px solid ${color}`,
-                    opacity: active ? 0.5 : 0.15,
-                    animationDuration: '2.5s',
+                    border: `2px solid ${color}`,
+                    opacity: active ? 0.8 : 0.4,
+                    animationDuration: active ? '1.5s' : '3s',
                 }}
             />
 
@@ -110,8 +109,9 @@ const CityNode = ({ room, isSelected, onClick, connections }) => {
                     left: '50%',
                     top: '50%',
                     transform: 'translate(-50%, -50%)',
-                    border: `1px solid ${active ? `${color}60` : `${color}15`}`,
+                    border: `1px solid ${active ? `${color}` : `${color}40`}`,
                     transition: 'all 0.5s',
+                    boxShadow: `inset 0 0 20px ${color}20`,
                 }}
             />
 
@@ -124,10 +124,10 @@ const CityNode = ({ room, isSelected, onClick, connections }) => {
                     left: '50%',
                     top: '50%',
                     transform: 'translate(-50%, -50%)',
-                    border: `2px solid ${active ? color : `${color}35`}`,
+                    border: `3px solid ${active ? color : `${color}80`}`,
                     boxShadow: active
-                        ? `0 0 30px ${color}60, inset 0 0 30px ${color}15`
-                        : `0 0 10px ${color}10`,
+                        ? `0 0 40px ${color}, inset 0 0 40px ${color}60`
+                        : `0 0 20px ${color}60, inset 0 0 10px ${color}30`,
                 }}
             />
 
@@ -138,19 +138,19 @@ const CityNode = ({ room, isSelected, onClick, connections }) => {
                     width: '60px',
                     height: '60px',
                     background: active
-                        ? `radial-gradient(circle, ${color}40, ${color}15, transparent)`
-                        : `radial-gradient(circle, ${color}20, ${color}08, transparent)`,
-                    border: `2px solid ${active ? color : `${color}50`}`,
+                        ? `radial-gradient(circle, ${color}90, ${color}40, transparent)`
+                        : `radial-gradient(circle, ${color}60, ${color}20, transparent)`,
+                    border: `2px solid ${color}`,
                     boxShadow: active
-                        ? `0 0 40px ${color}60, 0 0 80px ${color}25`
-                        : `0 0 20px ${color}15`,
+                        ? `0 0 50px ${color}, 0 0 100px ${color}`
+                        : `0 0 30px ${color}80`,
                     backdropFilter: 'blur(12px)',
                 }}
             >
                 <Icon
-                    size={active ? 24 : 20}
-                    style={{ color: active ? '#fff' : `${color}dd` }}
-                    className="transition-all duration-300 drop-shadow-lg"
+                    size={active ? 28 : 24}
+                    style={{ color: '#fff' }}
+                    className="transition-all duration-300 drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]"
                 />
             </div>
 
@@ -287,7 +287,7 @@ const CityMap = () => {
     };
 
     return (
-        <section id="city-map" className="py-16 px-4 relative overflow-hidden bg-[#0a0a1a]">
+        <section id="city-map" className="py-16 px-4 relative overflow-hidden bg-transparent">
             <div className="max-w-6xl mx-auto relative z-10">
                 <div className="text-center mb-10">
                     <h2
