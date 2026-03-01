@@ -289,12 +289,24 @@ const CityMap = () => {
     return (
         <section id="city-map" className="py-16 px-4 relative overflow-hidden bg-[#0a0a1a]">
             <div className="max-w-6xl mx-auto relative z-10">
-                <h2 className="text-3xl md:text-4xl font-heading font-bold text-center text-white mb-3 drop-shadow-lg">
-                    BlockCity Map
-                </h2>
-                <p className="text-gray-400 text-center mb-10 max-w-xl mx-auto">
-                    Explore the city network. Click on any building to discover its mission.
-                </p>
+                <div className="text-center mb-10">
+                    <h2
+                        className="text-4xl md:text-5xl font-bold uppercase tracking-wider mb-3"
+                        style={{
+                            fontFamily: "'Orbitron', sans-serif",
+                            color: '#F9A24D',
+                            textShadow: '0 0 30px rgba(249,162,77,0.3)',
+                        }}
+                    >
+                        BlockCity Map
+                    </h2>
+                    <p
+                        className="text-gray-300 text-lg md:text-xl max-w-xl mx-auto uppercase tracking-widest"
+                        style={{ fontFamily: "'Rajdhani', sans-serif" }}
+                    >
+                        Explore the city network. Click on any building to discover its mission.
+                    </p>
+                </div>
 
                 {/* Map Container */}
                 <div className="relative w-full rounded-2xl border border-white/10 overflow-hidden shadow-[0_0_60px_rgba(0,0,0,0.5)]"
