@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Scale, Landmark, Fingerprint, Building2, Shield, X, Wifi } from 'lucide-react';
+import { Scale, Landmark, Fingerprint, Building2, Shield, X, Wifi, Cloud } from 'lucide-react';
 
 const ROOMS = [
     {
@@ -54,7 +54,6 @@ const ROOMS = [
     },
 ];
 
-// Connection paths between buildings
 const CONNECTIONS = [
     { from: 0, to: 1 },
     { from: 1, to: 2 },
@@ -84,15 +83,15 @@ const CityNode = ({ room, isSelected, onClick }) => {
         >
             {/* Outer pulse ring */}
             <div
-                className="absolute inset-0 rounded-full animate-ping"
+                className="absolute rounded-full animate-ping"
                 style={{
                     width: `${nodeSize + 30}px`,
                     height: `${nodeSize + 30}px`,
-                    left: `50%`,
-                    top: `50%`,
+                    left: '50%',
+                    top: '50%',
                     transform: 'translate(-50%, -50%)',
                     border: `1px solid ${color}`,
-                    opacity: active ? 0.3 : 0.1,
+                    opacity: active ? 0.4 : 0.1,
                     animationDuration: '3s',
                 }}
             />
@@ -103,11 +102,11 @@ const CityNode = ({ room, isSelected, onClick }) => {
                 style={{
                     width: `${nodeSize + 16}px`,
                     height: `${nodeSize + 16}px`,
-                    left: `50%`,
-                    top: `50%`,
+                    left: '50%',
+                    top: '50%',
                     transform: 'translate(-50%, -50%)',
                     border: `2px solid ${active ? color : `${color}30`}`,
-                    boxShadow: active ? `0 0 20px ${color}40, inset 0 0 20px ${color}10` : 'none',
+                    boxShadow: active ? `0 0 25px ${color}50, inset 0 0 25px ${color}15` : 'none',
                 }}
             />
 
@@ -118,33 +117,35 @@ const CityNode = ({ room, isSelected, onClick }) => {
                     width: `${nodeSize}px`,
                     height: `${nodeSize}px`,
                     background: active
-                        ? `radial-gradient(circle, ${color}30, ${color}10, transparent)`
-                        : `radial-gradient(circle, ${color}15, transparent)`,
+                        ? `radial-gradient(circle, ${color}35, ${color}12, transparent)`
+                        : `radial-gradient(circle, ${color}18, transparent)`,
                     border: `2px solid ${active ? color : `${color}40`}`,
                     boxShadow: active
-                        ? `0 0 30px ${color}50, 0 0 60px ${color}20`
-                        : `0 0 15px ${color}15`,
+                        ? `0 0 40px ${color}50, 0 0 80px ${color}20`
+                        : `0 0 20px ${color}15`,
+                    backdropFilter: 'blur(8px)',
                 }}
             >
                 <Icon
                     size={active ? 26 : 22}
-                    style={{ color: active ? color : `${color}99` }}
-                    className="transition-all duration-300"
+                    style={{ color: active ? '#fff' : `${color}cc` }}
+                    className="transition-all duration-300 drop-shadow-lg"
                 />
             </div>
 
-            {/* Floating icon above */}
+            {/* Floating cloud/wifi icon above */}
             <div
                 className="absolute left-1/2 -translate-x-1/2 transition-all duration-500"
                 style={{
-                    top: '-28px',
+                    top: '-32px',
                     opacity: active ? 1 : 0.4,
                 }}
             >
-                <Wifi
-                    size={14}
+                <Cloud
+                    size={16}
                     style={{ color }}
                     className={active ? 'animate-pulse' : ''}
+                    fill={active ? `${color}30` : 'none'}
                 />
             </div>
 
@@ -154,13 +155,13 @@ const CityNode = ({ room, isSelected, onClick }) => {
                 style={{ top: `${nodeSize + 8}px` }}
             >
                 <p
-                    className="text-xs font-bold tracking-wide"
-                    style={{ color: active ? color : '#6b7280' }}
+                    className="text-xs font-bold tracking-wide drop-shadow-md"
+                    style={{ color: active ? '#fff' : '#d1d5db', textShadow: active ? `0 0 10px ${color}` : '0 1px 3px rgba(0,0,0,0.8)' }}
                 >
                     {name}
                 </p>
                 {active && (
-                    <p className="text-[10px] text-gray-500 mt-0.5">Click to explore</p>
+                    <p className="text-[10px] text-gray-300 mt-0.5" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}>Click to explore</p>
                 )}
             </div>
         </div>
@@ -175,45 +176,60 @@ const CityMap = () => {
     };
 
     return (
-        <section id="city-map" className="py-16 px-4 bg-secondary relative overflow-hidden">
-            {/* Background glow effects */}
-            <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute w-96 h-96 rounded-full bg-cyan-500/5 blur-3xl top-1/4 left-1/4" />
-                <div className="absolute w-72 h-72 rounded-full bg-purple-500/5 blur-3xl bottom-1/4 right-1/4" />
-            </div>
+        <section id="city-map" className="py-16 px-4 relative overflow-hidden">
+            {/* Full background image — same as hero */}
+            <div
+                className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+                style={{ backgroundImage: "url('/blockcity-bg.png')" }}
+            />
+            {/* Overlay to darken and blend */}
+            <div className="absolute inset-0 z-0 bg-gradient-to-b from-primary via-primary/70 to-primary" />
 
-            <div className="max-w-6xl mx-auto relative">
-                <h2 className="text-3xl md:text-4xl font-heading font-bold text-center text-white mb-3">
+            <div className="max-w-6xl mx-auto relative z-10">
+                <h2 className="text-3xl md:text-4xl font-heading font-bold text-center text-white mb-3 drop-shadow-lg">
                     BlockCity Map
                 </h2>
-                <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">
+                <p className="text-gray-300 text-center mb-12 max-w-xl mx-auto drop-shadow-md">
                     Explore the city network. Click on any node to discover its mission.
                 </p>
 
                 {/* Map Container */}
-                <div className="relative w-full h-[500px] rounded-2xl border border-gray-700/30 bg-primary/40 backdrop-blur-sm overflow-hidden">
-                    {/* Grid pattern background */}
-                    <svg className="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
+                <div className="relative w-full h-[550px] rounded-2xl border border-gray-600/20 overflow-hidden">
+                    {/* Inner background — city image with stronger visibility */}
+                    <div
+                        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                        style={{ backgroundImage: "url('/blockcity-bg.png')" }}
+                    />
+                    {/* Dark overlay so nodes are visible */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a1a]/90 via-[#0a0a1a]/60 to-[#1a1030]/70" />
+
+                    {/* SVG Skyline Silhouette */}
+                    <svg className="absolute bottom-0 left-0 w-full h-48 z-[5] pointer-events-none" preserveAspectRatio="none" viewBox="0 0 1200 200">
                         <defs>
-                            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#4a5568" strokeWidth="0.5" />
-                            </pattern>
+                            <linearGradient id="skylineGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#1a1030" stopOpacity="0.6" />
+                                <stop offset="100%" stopColor="#0a0a1a" stopOpacity="1" />
+                            </linearGradient>
                         </defs>
-                        <rect width="100%" height="100%" fill="url(#grid)" />
+                        {/* Buildings silhouette */}
+                        <path
+                            d="M0,200 L0,180 L30,180 L30,140 L50,140 L50,160 L70,160 L70,120 L85,120 L85,100 L95,100 L95,120 L110,120 L110,150 L130,150 L130,130 L145,130 L145,90 L155,90 L155,85 L160,80 L165,85 L165,90 L175,90 L175,130 L190,130 L190,155 L210,155 L210,110 L225,110 L225,70 L235,70 L235,60 L240,55 L245,60 L245,70 L255,70 L255,110 L270,110 L270,145 L290,145 L290,125 L310,125 L310,95 L320,95 L320,80 L325,75 L330,80 L330,95 L340,95 L340,125 L360,125 L360,155 L380,155 L380,135 L400,135 L400,105 L415,105 L415,75 L425,75 L425,65 L430,60 L435,65 L435,75 L445,75 L445,105 L460,105 L460,140 L480,140 L480,160 L510,160 L510,130 L530,130 L530,100 L540,100 L540,70 L545,65 L550,70 L550,100 L560,100 L560,130 L580,130 L580,145 L600,145 L600,120 L620,120 L620,90 L635,90 L635,60 L640,55 L645,60 L645,90 L660,90 L660,120 L680,120 L680,150 L700,150 L700,135 L720,135 L720,110 L740,110 L740,80 L750,80 L750,65 L755,60 L760,65 L760,80 L770,80 L770,110 L790,110 L790,140 L810,140 L810,155 L830,155 L830,130 L850,130 L850,100 L865,100 L865,85 L870,80 L875,85 L875,100 L890,100 L890,130 L910,130 L910,150 L940,150 L940,125 L960,125 L960,105 L975,105 L975,140 L1000,140 L1000,160 L1020,160 L1020,135 L1040,135 L1040,155 L1060,155 L1060,170 L1080,170 L1080,145 L1100,145 L1100,160 L1130,160 L1130,175 L1160,175 L1160,165 L1180,165 L1180,180 L1200,180 L1200,200 Z"
+                            fill="url(#skylineGrad)"
+                        />
+                        {/* Window lights */}
+                        {[92, 158, 238, 328, 430, 545, 640, 755, 870].map((bx, i) => (
+                            <g key={i}>
+                                <rect x={bx - 3} y={75 + (i % 3) * 12} width="4" height="3" fill="#f59e0b" opacity={0.3 + (i % 3) * 0.15} className="animate-pulse" style={{ animationDelay: `${i * 0.4}s` }} />
+                                <rect x={bx + 3} y={82 + (i % 2) * 10} width="4" height="3" fill="#f59e0b" opacity={0.2 + (i % 2) * 0.2} className="animate-pulse" style={{ animationDelay: `${i * 0.6}s` }} />
+                            </g>
+                        ))}
                     </svg>
 
-                    {/* Connection lines (SVG) */}
+                    {/* Connection lines */}
                     <svg className="absolute inset-0 w-full h-full z-10 pointer-events-none">
                         <defs>
-                            <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.6" />
-                                <stop offset="50%" stopColor="#8b5cf6" stopOpacity="0.8" />
-                                <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.6" />
-                            </linearGradient>
-
-                            {/* Animated dash */}
                             <filter id="glow">
-                                <feGaussianBlur stdDeviation="2" result="blur" />
+                                <feGaussianBlur stdDeviation="3" result="blur" />
                                 <feMerge>
                                     <feMergeNode in="blur" />
                                     <feMergeNode in="SourceGraphic" />
@@ -224,52 +240,42 @@ const CityMap = () => {
                         {CONNECTIONS.map((conn, i) => {
                             const fromRoom = ROOMS[conn.from];
                             const toRoom = ROOMS[conn.to];
-                            const isActive =
-                                selectedRoom?.id === fromRoom.id || selectedRoom?.id === toRoom.id;
+                            const isActive = selectedRoom?.id === fromRoom.id || selectedRoom?.id === toRoom.id;
 
                             return (
                                 <g key={i}>
-                                    {/* Glow line */}
                                     <line
                                         x1={`${fromRoom.x}%`}
                                         y1={`${fromRoom.y}%`}
                                         x2={`${toRoom.x}%`}
                                         y2={`${toRoom.y}%`}
                                         stroke={isActive ? '#06b6d4' : '#1e3a5f'}
-                                        strokeWidth={isActive ? 2 : 1}
-                                        opacity={isActive ? 0.8 : 0.3}
+                                        strokeWidth={isActive ? 2.5 : 1}
+                                        opacity={isActive ? 0.9 : 0.25}
                                         filter={isActive ? 'url(#glow)' : ''}
                                         className="transition-all duration-500"
                                     />
-                                    {/* Animated dot traveling along line */}
-                                    {isActive && (
-                                        <circle r="3" fill="#06b6d4" filter="url(#glow)">
-                                            <animateMotion
-                                                dur={`${2 + i * 0.5}s`}
-                                                repeatCount="indefinite"
-                                                path={`M ${fromRoom.x * 10.8},${fromRoom.y * 5} L ${toRoom.x * 10.8},${toRoom.y * 5}`}
-                                            />
-                                        </circle>
-                                    )}
                                 </g>
                             );
                         })}
 
-                        {/* Static traveling dots on all lines */}
+                        {/* Traveling dots */}
                         {CONNECTIONS.map((conn, i) => {
                             const fromRoom = ROOMS[conn.from];
                             const toRoom = ROOMS[conn.to];
+                            const isActive = selectedRoom?.id === fromRoom.id || selectedRoom?.id === toRoom.id;
                             return (
                                 <circle
                                     key={`dot-${i}`}
-                                    r="1.5"
-                                    fill="#06b6d4"
-                                    opacity="0.4"
+                                    r={isActive ? 2.5 : 1.5}
+                                    fill={isActive ? '#06b6d4' : '#1e3a5f'}
+                                    opacity={isActive ? 0.9 : 0.3}
+                                    filter={isActive ? 'url(#glow)' : ''}
                                 >
                                     <animateMotion
-                                        dur={`${4 + i}s`}
+                                        dur={`${3 + i}s`}
                                         repeatCount="indefinite"
-                                        path={`M ${fromRoom.x * 10.8},${fromRoom.y * 5} L ${toRoom.x * 10.8},${toRoom.y * 5}`}
+                                        path={`M ${fromRoom.x * 10.8},${fromRoom.y * 5.5} L ${toRoom.x * 10.8},${toRoom.y * 5.5}`}
                                     />
                                 </circle>
                             );
@@ -292,16 +298,16 @@ const CityMap = () => {
                     <div
                         className="max-w-2xl mx-auto mt-6 rounded-2xl p-6 border backdrop-blur-xl animate-fadeIn relative overflow-hidden"
                         style={{
-                            backgroundColor: `${selectedRoom.color}08`,
+                            backgroundColor: `${selectedRoom.color}0a`,
                             borderColor: `${selectedRoom.color}30`,
                             boxShadow: `0 0 60px ${selectedRoom.color}15, inset 0 0 40px ${selectedRoom.color}05`,
                         }}
                     >
                         {/* Scan line effect */}
                         <div
-                            className="absolute inset-0 pointer-events-none opacity-10"
+                            className="absolute inset-0 pointer-events-none opacity-5"
                             style={{
-                                background: `repeating-linear-gradient(0deg, transparent, transparent 2px, ${selectedRoom.color}10 2px, ${selectedRoom.color}10 4px)`,
+                                background: `repeating-linear-gradient(0deg, transparent, transparent 2px, ${selectedRoom.color}15 2px, ${selectedRoom.color}15 4px)`,
                             }}
                         />
 
@@ -309,11 +315,11 @@ const CityMap = () => {
                             <div className="flex items-start justify-between">
                                 <div className="flex items-center gap-4">
                                     <div
-                                        className="w-14 h-14 rounded-xl flex items-center justify-center relative"
+                                        className="w-14 h-14 rounded-xl flex items-center justify-center"
                                         style={{
                                             backgroundColor: `${selectedRoom.color}15`,
                                             border: `2px solid ${selectedRoom.color}40`,
-                                            boxShadow: `0 0 20px ${selectedRoom.color}20`,
+                                            boxShadow: `0 0 25px ${selectedRoom.color}25`,
                                         }}
                                     >
                                         <selectedRoom.Icon size={24} style={{ color: selectedRoom.color }} />
