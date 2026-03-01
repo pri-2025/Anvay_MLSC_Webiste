@@ -1,23 +1,42 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import RoomSelection from './RoomSelection';
+import RoomSetupModal from './RoomSetupModal';
 import RoomControlDashboard from './RoomControlDashboard';
 
 const AdminDashboard = () => {
     const { logout, admin } = useAuth();
     const [selectedRoom, setSelectedRoom] = useState(null);
+    const [setupRoom, setSetupRoom] = useState(null); // room waiting for setup input
+    const [roomConfig, setRoomConfig] = useState(null); // { totalParticipants, capacity }
 
-    // Room selected → show room control dashboard
-    if (selectedRoom) {
+    const handleRoomClick = (room) => {
+        setSetupRoom(room); // show setup modal
+    };
+
+    const handleSetupConfirm = (config) => {
+        setRoomConfig(config);
+        setSelectedRoom(setupRoom);
+        setSetupRoom(null);
+    };
+
+    const handleBack = () => {
+        setSelectedRoom(null);
+        setRoomConfig(null);
+    };
+
+    // Room selected + config set → show room control dashboard
+    if (selectedRoom && roomConfig) {
         return (
             <RoomControlDashboard
                 room={selectedRoom}
-                onBack={() => setSelectedRoom(null)}
+                roomConfig={roomConfig}
+                onBack={handleBack}
             />
         );
     }
 
-    // No room selected → show room selection
+    // No room selected → show room selection + optional setup modal
     return (
         <div className="min-h-screen bg-primary">
             {/* Top Bar */}
@@ -36,7 +55,16 @@ const AdminDashboard = () => {
             </div>
 
             {/* Room Selection */}
-            <RoomSelection onSelectRoom={setSelectedRoom} />
+            <RoomSelection onSelectRoom={handleRoomClick} />
+
+            {/* Setup Modal */}
+            {setupRoom && (
+                <RoomSetupModal
+                    room={setupRoom}
+                    onConfirm={handleSetupConfirm}
+                    onCancel={() => setSetupRoom(null)}
+                />
+            )}
         </div>
     );
 };

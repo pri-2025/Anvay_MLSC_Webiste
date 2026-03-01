@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Lock, LogIn } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const AdminLogin = () => {
@@ -19,10 +20,6 @@ const AdminLogin = () => {
 
         try {
             // TODO: Replace with actual API call
-            // const response = await API.post('/admin/login', formData);
-            // login(response.data, response.data.token);
-
-            // Temporary mock login for development
             if (formData.username === 'admin' && formData.password === 'admin123') {
                 login({ name: 'Admin', email: 'admin@blockcity.com' }, 'mock-jwt-token');
             } else {
@@ -40,7 +37,9 @@ const AdminLogin = () => {
             <div className="w-full max-w-md">
                 {/* Header */}
                 <div className="text-center mb-8">
-                    <div className="text-5xl mb-4">🔐</div>
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-highlight/10 border border-highlight/30 flex items-center justify-center">
+                        <Lock size={28} className="text-highlight" />
+                    </div>
                     <h1 className="text-3xl font-heading font-bold text-white mb-2">
                         Admin Login
                     </h1>
@@ -91,7 +90,7 @@ const AdminLogin = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full py-3 bg-highlight text-white font-semibold rounded-lg hover:bg-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+                            className="w-full py-3 bg-highlight text-white font-semibold rounded-lg hover:bg-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-2 flex items-center justify-center gap-2"
                         >
                             {loading ? (
                                 <span className="flex items-center justify-center gap-2">
@@ -102,7 +101,10 @@ const AdminLogin = () => {
                                     Signing in...
                                 </span>
                             ) : (
-                                'Sign In'
+                                <>
+                                    <LogIn size={18} />
+                                    Sign In
+                                </>
                             )}
                         </button>
                     </form>

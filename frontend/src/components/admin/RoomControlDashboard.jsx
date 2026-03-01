@@ -4,11 +4,13 @@ import SubmissionQueue from './SubmissionQueue';
 import RoomMetrics from './RoomMetrics';
 import MiniLeaderboard from './MiniLeaderboard';
 
-const RoomControlDashboard = ({ room, onBack }) => {
+const RoomControlDashboard = ({ room, roomConfig, onBack }) => {
     const [roomData, setRoomData] = useState({
         ...room,
         totalPoints: 450,
         pendingCount: 3,
+        totalParticipants: roomConfig?.totalParticipants || 0,
+        capacity: roomConfig?.capacity || 0,
     });
 
     const handleToggleStatus = () => {

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Trophy, Medal, Hash } from 'lucide-react';
 
 const MOCK_TOP_5 = [
     { rank: 1, name: 'Priya Sharma', citizenId: 'BC-K5T3W', totalPoints: 210, roomRank: 1 },
@@ -8,14 +9,19 @@ const MOCK_TOP_5 = [
     { rank: 5, name: 'Rahul Deshmukh', citizenId: 'BC-R8N1L', totalPoints: 130, roomRank: 4 },
 ];
 
-const rankEmojis = { 1: '🥇', 2: '🥈', 3: '🥉' };
+const rankColors = {
+    1: 'text-yellow-400',
+    2: 'text-gray-300',
+    3: 'text-orange-400',
+};
 
 const MiniLeaderboard = ({ roomColor }) => {
     return (
         <div className="bg-secondary/60 border border-gray-700/50 rounded-2xl overflow-hidden">
             <div className="px-5 py-4 border-b border-gray-700/50">
                 <h3 className="text-lg font-heading font-bold text-white flex items-center gap-2">
-                    🏆 Live Leaderboard
+                    <Trophy size={18} className="text-yellow-400" />
+                    Live Leaderboard
                 </h3>
                 <p className="text-gray-400 text-xs mt-1">Top 5 Participants — Global Ranking</p>
             </div>
@@ -29,10 +35,12 @@ const MiniLeaderboard = ({ roomColor }) => {
                         <div className="flex items-center gap-3">
                             {/* Rank */}
                             <div className="w-8 text-center">
-                                {rankEmojis[entry.rank] ? (
-                                    <span className="text-lg">{rankEmojis[entry.rank]}</span>
+                                {entry.rank <= 3 ? (
+                                    <Medal size={18} className={rankColors[entry.rank]} />
                                 ) : (
-                                    <span className="text-gray-500 font-bold text-sm">#{entry.rank}</span>
+                                    <span className="text-gray-500 font-bold text-sm flex items-center justify-center">
+                                        <Hash size={12} />{entry.rank}
+                                    </span>
                                 )}
                             </div>
 
