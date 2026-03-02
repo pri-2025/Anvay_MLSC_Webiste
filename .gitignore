@@ -76,3 +76,7 @@ coverage/
 .turbo/
 .vercel/
 .eslintcache
+backend/config/serviceAccountKey.json
+backend/participants.csv
+node_modules/
+.env

@@ -1,5 +1,4 @@
-const jwt = require('jsonwebtoken');
-const Admin = require('../models/Admin');
+const admin = require('firebase-admin');
 
 const protect = async (req, res, next) => {
     let token;
@@ -7,15 +6,19 @@ const protect = async (req, res, next) => {
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
             token = req.headers.authorization.split(' ')[1];
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            req.admin = await Admin.findById(decoded.id).select('-password');
+            const decoded = await admin.auth().verifyIdToken(token);
+            req.admin = decoded; // contains uid, email, role (custom claim)
+
+            // Only allow mentors and admins
+            if (decoded.role !== 'mentor' && decoded.role !== 'admin') {
+                return res.status(403).json({ message: 'Not authorized, insufficient role' });
+            }
+
             next();
         } catch (error) {
             return res.status(401).json({ message: 'Not authorized, token failed' });
         }
-    }
-
-    if (!token) {
+    } else {
         return res.status(401).json({ message: 'Not authorized, no token' });
     }
 };

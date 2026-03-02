@@ -1,6 +1,6 @@
 /**
  * Middleware to validate score submission requests.
- */
+ 
 const validateSubmission = (req, res, next) => {
     const { participantId, roomId, score } = req.body;
 
@@ -28,3 +28,4 @@ const validateSubmission = (req, res, next) => {
 };
 
 module.exports = { validateSubmission };
+*/

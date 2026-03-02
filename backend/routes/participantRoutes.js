@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 const {
     getParticipants,
-    getParticipantByCitizenId,
-    createParticipant,
-    updateParticipant,
+    getParticipantByUce,
+    updateScore,
+    updateParticipant
 } = require('../controllers/participantController');
-const { protect } = require('../middleware/authMiddleware');
 
-router.route('/').get(getParticipants).post(protect, createParticipant);
-router.route('/citizen/:citizenId').get(getParticipantByCitizenId);
-router.route('/:id').put(protect, updateParticipant);
+router.get('/', getParticipants);
+router.get('/:uce', getParticipantByUce);
+router.put('/:uce/score', updateScore);   // for updating room scores
+//router.put('/:uce', updateParticipant);   // for general updates
 
 module.exports = router;

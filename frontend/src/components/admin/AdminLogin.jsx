@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
 import { Lock, LogIn } from 'lucide-react';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { auth } from '../../firebase'; // adjust path if needed
 import { useAuth } from '../../context/AuthContext';
 
 const AdminLogin = () => {
     const { login } = useAuth();
-    const [formData, setFormData] = useState({ username: '', password: '' });
+
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
+
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -19,14 +26,36 @@ const AdminLogin = () => {
         setError('');
 
         try {
-            // TODO: Replace with actual API call
-            if (formData.username === 'admin' && formData.password === 'admin123') {
-                login({ name: 'Admin', email: 'admin@blockcity.com' }, 'mock-jwt-token');
-            } else {
-                setError('Invalid username or password');
-            }
+            // 🔥 Firebase Authentication
+            const userCredential = await signInWithEmailAndPassword(
+                auth,
+                formData.email,
+                formData.password
+            );
+
+            const user = userCredential.user;
+
+           
+
+            // Store user in AuthContext
+            login(
+                {
+                    name: "Admin",
+                    email: user.email,
+                },
+                user.accessToken
+            );
+
         } catch (err) {
-            setError('Login failed. Please try again.');
+            if (err.code === "auth/user-not-found") {
+                setError("Admin account not found.");
+            } else if (err.code === "auth/wrong-password") {
+                setError("Incorrect password.");
+            } else if (err.code === "auth/invalid-email") {
+                setError("Invalid email format.");
+            } else {
+                setError("Login failed. Please try again.");
+            }
         } finally {
             setLoading(false);
         }
@@ -74,7 +103,6 @@ const AdminLogin = () => {
                         boxShadow: '0 0 40px rgba(0,0,0,0.5)',
                     }}
                 >
-                    {/* Scan lines effect inside card */}
                     <div
                         className="absolute inset-0 pointer-events-none opacity-5"
                         style={{
@@ -90,36 +118,31 @@ const AdminLogin = () => {
                         )}
 
                         <form onSubmit={handleSubmit} className="space-y-6">
+
+                            {/* EMAIL */}
                             <div>
                                 <label
                                     className="block text-[#F9A24D] text-xs font-bold mb-2 uppercase tracking-widest"
                                     style={{ fontFamily: "'Orbitron', sans-serif" }}
                                 >
-                                    Username
+                                    Email
                                 </label>
                                 <input
-                                    type="text"
-                                    name="username"
-                                    value={formData.username}
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
                                     onChange={handleChange}
                                     required
-                                    placeholder="Enter username"
+                                    placeholder="Enter admin email"
                                     className="w-full px-4 py-3.5 rounded-xl bg-[#0a0a1a]/50 text-white placeholder-gray-500 font-mono focus:outline-none transition-all duration-300"
                                     style={{
                                         border: '1px solid rgba(249,162,77,0.3)',
                                         boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5)',
                                     }}
-                                    onFocus={(e) => {
-                                        e.target.style.borderColor = '#F9A24D';
-                                        e.target.style.boxShadow = '0 0 20px rgba(249,162,77,0.2), inset 0 0 20px rgba(0,0,0,0.5)';
-                                    }}
-                                    onBlur={(e) => {
-                                        e.target.style.borderColor = 'rgba(249,162,77,0.3)';
-                                        e.target.style.boxShadow = 'inset 0 0 20px rgba(0,0,0,0.5)';
-                                    }}
                                 />
                             </div>
 
+                            {/* PASSWORD */}
                             <div>
                                 <label
                                     className="block text-[#F9A24D] text-xs font-bold mb-2 uppercase tracking-widest"
@@ -139,17 +162,10 @@ const AdminLogin = () => {
                                         border: '1px solid rgba(249,162,77,0.3)',
                                         boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5)',
                                     }}
-                                    onFocus={(e) => {
-                                        e.target.style.borderColor = '#F9A24D';
-                                        e.target.style.boxShadow = '0 0 20px rgba(249,162,77,0.2), inset 0 0 20px rgba(0,0,0,0.5)';
-                                    }}
-                                    onBlur={(e) => {
-                                        e.target.style.borderColor = 'rgba(249,162,77,0.3)';
-                                        e.target.style.boxShadow = 'inset 0 0 20px rgba(0,0,0,0.5)';
-                                    }}
                                 />
                             </div>
 
+                            {/* SUBMIT BUTTON */}
                             <button
                                 type="submit"
                                 disabled={loading}
@@ -158,21 +174,15 @@ const AdminLogin = () => {
                                     background: 'linear-gradient(135deg, #F9A24D, #ff6b35)',
                                     boxShadow: '0 0 20px rgba(249,162,77,0.3)',
                                 }}
-                                onMouseEnter={(e) => {
-                                    if (!loading) e.target.style.boxShadow = '0 0 40px rgba(249,162,77,0.5)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    if (!loading) e.target.style.boxShadow = '0 0 20px rgba(249,162,77,0.3)';
-                                }}
                             >
                                 {loading ? (
-                                    <span className="flex items-center justify-center gap-2">
+                                    <>
                                         <svg className="animate-spin h-5 w-5 text-[#0a0a1a]" viewBox="0 0 24 24">
                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                                         </svg>
                                         Signing in...
-                                    </span>
+                                    </>
                                 ) : (
                                     <>
                                         <LogIn size={18} />
@@ -180,6 +190,7 @@ const AdminLogin = () => {
                                     </>
                                 )}
                             </button>
+
                         </form>
                     </div>
                 </div>
