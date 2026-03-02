@@ -320,10 +320,10 @@ const CityMap = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a1a]/40 via-transparent to-[#0a0a1a]/20 rounded-2xl overflow-hidden pointer-events-none" />
 
                     {/* Connection lines */}
-                    <svg className="absolute inset-0 w-full h-full z-10 pointer-events-none">
+                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full z-10 pointer-events-none">
                         <defs>
                             <filter id="lineGlow">
-                                <feGaussianBlur stdDeviation="4" result="blur" />
+                                <feGaussianBlur stdDeviation="0.4" result="blur" />
                                 <feMerge>
                                     <feMergeNode in="blur" />
                                     <feMergeNode in="SourceGraphic" />
@@ -336,22 +336,24 @@ const CityMap = () => {
                             const toRoom = ROOMS[conn.to];
                             const isActive = selectedRoom?.id === fromRoom.id || selectedRoom?.id === toRoom.id;
 
-                            // Curved path
+                            // Curved path (using 0-100 coordinates equivalent to percentages)
                             const mx = (fromRoom.x + toRoom.x) / 2;
                             const my = Math.min(fromRoom.y, toRoom.y) - 8;
+                            const pathData = `M ${fromRoom.x} ${fromRoom.y} Q ${mx} ${my} ${toRoom.x} ${toRoom.y}`;
 
                             return (
                                 <g key={i}>
                                     <path
-                                        d={`M ${fromRoom.x}% ${fromRoom.y}% Q ${mx}% ${my}% ${toRoom.x}% ${toRoom.y}%`}
+                                        d={pathData}
                                         fill="none"
                                         stroke={isActive ? '#f472b6' : 'rgba(244,114,182,0.2)'}
-                                        strokeWidth={isActive ? 2.5 : 1}
+                                        strokeWidth={isActive ? 0.3 : 0.1}
+                                        vectorEffect="non-scaling-stroke"
                                         opacity={isActive ? 0.9 : 0.35}
                                         filter={isActive ? 'url(#lineGlow)' : ''}
                                         className="transition-all duration-500"
                                         style={{
-                                            strokeDasharray: isActive ? 'none' : '6 4',
+                                            strokeDasharray: isActive ? 'none' : '1 1',
                                         }}
                                     />
                                 </g>
@@ -363,13 +365,15 @@ const CityMap = () => {
                             const fromRoom = ROOMS[conn.from];
                             const toRoom = ROOMS[conn.to];
                             const isActive = selectedRoom?.id === fromRoom.id || selectedRoom?.id === toRoom.id;
+
                             const mx = (fromRoom.x + toRoom.x) / 2;
                             const my = Math.min(fromRoom.y, toRoom.y) - 8;
+                            const pathData = `M ${fromRoom.x} ${fromRoom.y} Q ${mx} ${my} ${toRoom.x} ${toRoom.y}`;
 
                             return (
                                 <circle
                                     key={`dot-${i}`}
-                                    r={isActive ? 3 : 1.5}
+                                    r={isActive ? 0.4 : 0.25}
                                     fill={isActive ? '#f472b6' : '#06b6d4'}
                                     opacity={isActive ? 1 : 0.4}
                                     filter={isActive ? 'url(#lineGlow)' : ''}
@@ -377,7 +381,7 @@ const CityMap = () => {
                                     <animateMotion
                                         dur={`${2.5 + i * 0.5}s`}
                                         repeatCount="indefinite"
-                                        path={`M ${fromRoom.x * 10.8},${fromRoom.y * 5} Q ${mx * 10.8},${my * 5} ${toRoom.x * 10.8},${toRoom.y * 5}`}
+                                        path={pathData}
                                     />
                                 </circle>
                             );
