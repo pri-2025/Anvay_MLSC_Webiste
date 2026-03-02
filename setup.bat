@@ -41,6 +41,8 @@ if not exist frontend (
     exit /b 1
 )
 cd frontend
+echo Clearing frontend cache to ensure clean Tailwind CSS setup...
+if exist node_modules\.vite rmdir /s /q node_modules\.vite
 call npm install
 if %ERRORLEVEL% neq 0 (
     echo Error installing frontend dependencies.
