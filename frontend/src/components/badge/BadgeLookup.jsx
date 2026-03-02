@@ -69,8 +69,8 @@ const BadgeLookup = () => {
                     Enter your Citizen ID to view your badge and progress.
                 </p>
 
-                <form onSubmit={handleLookup} className="flex gap-4 mb-10 justify-center max-w-lg mx-auto">
-                    <div className="relative flex-1 group">
+                <form onSubmit={handleLookup} className="flex flex-col sm:flex-row gap-4 mb-10 justify-center max-w-lg mx-auto w-full px-4 sm:px-0">
+                    <div className="relative flex-1 group w-full">
                         <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#F9A24D]/60 group-focus-within:text-[#F9A24D] transition-colors" />
                         <input
                             type="text"

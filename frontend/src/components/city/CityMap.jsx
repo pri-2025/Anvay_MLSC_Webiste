@@ -309,16 +309,15 @@ const CityMap = () => {
                 </div>
 
                 {/* Map Container */}
-                <div className="relative w-full rounded-2xl border border-white/10 overflow-hidden shadow-[0_0_60px_rgba(0,0,0,0.5)]"
-                    style={{ aspectRatio: '16/9' }}
+                <div className="relative w-full rounded-2xl border border-white/10 shadow-[0_0_60px_rgba(0,0,0,0.5)] aspect-square md:aspect-video"
                 >
                     {/* Background Image */}
                     <div
-                        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                        className="absolute inset-0 bg-cover bg-center bg-no-repeat rounded-2xl overflow-hidden"
                         style={{ backgroundImage: "url('/neon-city-bg.png')" }}
                     />
                     {/* Subtle dark overlay for node readability */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a1a]/40 via-transparent to-[#0a0a1a]/20" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a1a]/40 via-transparent to-[#0a0a1a]/20 rounded-2xl overflow-hidden pointer-events-none" />
 
                     {/* Connection lines */}
                     <svg className="absolute inset-0 w-full h-full z-10 pointer-events-none">

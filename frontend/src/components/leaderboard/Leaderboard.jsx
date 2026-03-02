@@ -59,97 +59,99 @@ const Leaderboard = () => {
 
                 {/* Table */}
                 <div
-                    className="rounded-2xl border overflow-hidden"
+                    className="rounded-2xl border overflow-x-auto"
                     style={{
                         backgroundColor: 'rgba(15, 18, 35, 0.8)',
                         borderColor: 'rgba(255,255,255,0.06)',
                         boxShadow: '0 0 60px rgba(0,0,0,0.5)',
                     }}
                 >
-                    {/* Table Header */}
-                    <div className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-white/5">
-                        <span className="col-span-2 text-xs font-semibold text-gray-500 uppercase tracking-widest">Rank</span>
-                        <span className="col-span-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">Citizen ID</span>
-                        <span className="col-span-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">Name</span>
-                        <span className="col-span-2 text-xs font-semibold text-gray-500 uppercase tracking-widest">Points</span>
-                        <span className="col-span-2 text-xs font-semibold text-gray-500 uppercase tracking-widest text-right">Tier</span>
-                    </div>
+                    <div className="min-w-[700px] w-full">
+                        {/* Table Header */}
+                        <div className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-white/5">
+                            <span className="col-span-2 text-xs font-semibold text-gray-500 uppercase tracking-widest">Rank</span>
+                            <span className="col-span-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">Citizen ID</span>
+                            <span className="col-span-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">Name</span>
+                            <span className="col-span-2 text-xs font-semibold text-gray-500 uppercase tracking-widest">Points</span>
+                            <span className="col-span-2 text-xs font-semibold text-gray-500 uppercase tracking-widest text-right">Tier</span>
+                        </div>
 
-                    {/* Rows */}
-                    <div className="max-h-[500px] overflow-y-auto">
-                        {displayEntries.map((entry, index) => {
-                            const rank = index + 1;
-                            const tier = getTierInfo(rank);
-                            const isTopThree = rank <= 3;
+                        {/* Rows */}
+                        <div className="max-h-[500px] overflow-y-auto">
+                            {displayEntries.map((entry, index) => {
+                                const rank = index + 1;
+                                const tier = getTierInfo(rank);
+                                const isTopThree = rank <= 3;
 
-                            return (
-                                <div
-                                    key={entry._id || index}
-                                    className="grid grid-cols-12 gap-4 items-center px-6 py-4 border-b transition-colors hover:bg-white/[0.03]"
-                                    style={{
-                                        borderColor: isTopThree ? 'rgba(249,162,77,0.15)' : 'rgba(255,255,255,0.03)',
-                                        backgroundColor: isTopThree ? 'rgba(249,162,77,0.03)' : 'transparent',
-                                    }}
-                                >
-                                    {/* Rank */}
-                                    <div className="col-span-2">
-                                        <span
-                                            className="text-lg font-bold"
-                                            style={{
-                                                fontFamily: "'Orbitron', sans-serif",
-                                                color: isTopThree ? '#F9A24D' : '#6b7280',
-                                                textShadow: isTopThree ? '0 0 15px rgba(249,162,77,0.3)' : 'none',
-                                            }}
-                                        >
-                                            #{rank}
-                                        </span>
+                                return (
+                                    <div
+                                        key={entry._id || index}
+                                        className="grid grid-cols-12 gap-4 items-center px-6 py-4 border-b transition-colors hover:bg-white/[0.03]"
+                                        style={{
+                                            borderColor: isTopThree ? 'rgba(249,162,77,0.15)' : 'rgba(255,255,255,0.03)',
+                                            backgroundColor: isTopThree ? 'rgba(249,162,77,0.03)' : 'transparent',
+                                        }}
+                                    >
+                                        {/* Rank */}
+                                        <div className="col-span-2">
+                                            <span
+                                                className="text-lg font-bold"
+                                                style={{
+                                                    fontFamily: "'Orbitron', sans-serif",
+                                                    color: isTopThree ? '#F9A24D' : '#6b7280',
+                                                    textShadow: isTopThree ? '0 0 15px rgba(249,162,77,0.3)' : 'none',
+                                                }}
+                                            >
+                                                #{rank}
+                                            </span>
+                                        </div>
+
+                                        {/* Citizen ID */}
+                                        <div className="col-span-3">
+                                            <span className="text-sm font-mono text-gray-400">
+                                                {entry.citizenId || `BC-${entry._id?.slice(-4).toUpperCase() || '0000'}`}
+                                            </span>
+                                        </div>
+
+                                        {/* Name */}
+                                        <div className="col-span-3">
+                                            <span className={`font-semibold ${isTopThree ? 'text-white' : 'text-gray-300'}`}>
+                                                {entry.name}
+                                            </span>
+                                        </div>
+
+                                        {/* Points */}
+                                        <div className="col-span-2">
+                                            <span
+                                                className="font-bold"
+                                                style={{
+                                                    fontFamily: "'Orbitron', sans-serif",
+                                                    color: '#F9A24D',
+                                                    fontSize: '0.9rem',
+                                                }}
+                                            >
+                                                {(entry.totalScore || 0).toLocaleString()}
+                                            </span>
+                                            <span className="text-gray-500 text-xs ml-1">pts</span>
+                                        </div>
+
+                                        {/* Tier Badge */}
+                                        <div className="col-span-2 text-right">
+                                            <span
+                                                className="px-3 py-1 rounded-full text-xs font-bold border"
+                                                style={{
+                                                    color: tier.color,
+                                                    borderColor: tier.borderColor,
+                                                    backgroundColor: tier.bgColor,
+                                                }}
+                                            >
+                                                {tier.label}
+                                            </span>
+                                        </div>
                                     </div>
-
-                                    {/* Citizen ID */}
-                                    <div className="col-span-3">
-                                        <span className="text-sm font-mono text-gray-400">
-                                            {entry.citizenId || `BC-${entry._id?.slice(-4).toUpperCase() || '0000'}`}
-                                        </span>
-                                    </div>
-
-                                    {/* Name */}
-                                    <div className="col-span-3">
-                                        <span className={`font-semibold ${isTopThree ? 'text-white' : 'text-gray-300'}`}>
-                                            {entry.name}
-                                        </span>
-                                    </div>
-
-                                    {/* Points */}
-                                    <div className="col-span-2">
-                                        <span
-                                            className="font-bold"
-                                            style={{
-                                                fontFamily: "'Orbitron', sans-serif",
-                                                color: '#F9A24D',
-                                                fontSize: '0.9rem',
-                                            }}
-                                        >
-                                            {(entry.totalScore || 0).toLocaleString()}
-                                        </span>
-                                        <span className="text-gray-500 text-xs ml-1">pts</span>
-                                    </div>
-
-                                    {/* Tier Badge */}
-                                    <div className="col-span-2 text-right">
-                                        <span
-                                            className="px-3 py-1 rounded-full text-xs font-bold border"
-                                            style={{
-                                                color: tier.color,
-                                                borderColor: tier.borderColor,
-                                                backgroundColor: tier.bgColor,
-                                            }}
-                                        >
-                                            {tier.label}
-                                        </span>
-                                    </div>
-                                </div>
-                            );
-                        })}
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
 
