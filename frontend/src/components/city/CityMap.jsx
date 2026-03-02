@@ -9,7 +9,7 @@ const ROOMS = [
         description: 'Legal challenges and constitutional puzzles',
         challenge: 'Decode laws, draft contracts, find loopholes',
         status: 'open',
-        color: '#00d4ff',
+        color: '#ff5500ff',
         // On the blue cloud above left building
         x: 16, y: 57,
     },
@@ -20,7 +20,7 @@ const ROOMS = [
         description: 'Financial strategy and resource management',
         challenge: 'Budget allocation, crypto puzzles, trade wars',
         status: 'open',
-        color: '#f472b6',
+        color: '#83f40bff',
         // On the blue cloud above center-left tower
         x: 33, y: 45,
     },
@@ -42,7 +42,7 @@ const ROOMS = [
         description: 'Governance decisions and policy debates',
         challenge: 'Debates, voting systems, policy drafting',
         status: 'open',
-        color: '#c084fc',
+        color: '#fbd83cff',
         // On the blue cloud above right building
         x: 68, y: 45,
     },
