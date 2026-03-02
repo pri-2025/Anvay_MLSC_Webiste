@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@theme {
+  --color-primary: #1a1a2e;
+  --color-secondary: #16213e;
+  --color-accent: #0f3460;
+  --color-highlight: #e94560;
+  --color-gold: #ffd700;
+  --color-silver: #c0c0c0;
+  --color-bronze: #cd7f32;
+  --color-platinum: #e5e4e2;
+
+  --font-heading: Orbitron, sans-serif;
+  --font-body: Inter, sans-serif;
+}
+
 /* Animations */
 @keyframes fadeIn {
   from {
