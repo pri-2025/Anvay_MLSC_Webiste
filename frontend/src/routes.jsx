@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Admin from './pages/Admin';
 import NotFound from './pages/NotFound';
+import RoomPage from './pages/participant/RoomPage';
 
 // Participant Pages
 import ParticipantLogin from './pages/participant/ParticipantLogin';
@@ -17,6 +18,7 @@ const AppRoutes = () => {
         <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/participant/room/:roomId" element={<RoomPage />} />
 
             {/* Participant Routes */}
             <Route path="/participant" element={<ParticipantLogin />} />
