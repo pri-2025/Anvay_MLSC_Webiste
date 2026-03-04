@@ -67,7 +67,7 @@ const RoomCard = ({ room }) => {
                     <span className="text-xs font-bold" style={{ color: '#34d399' }}>Completed</span>
                 </div>
             )}
-            {status === 'inProgress' && (
+            {(status === 'inProgress' || status === 'locked') && (
                 <button
                     onClick={() => {
                         const rooms = ['Law Foundry', 'Treasury Mint', 'Identity Bureau', 'Council Chamber', 'Control Center'];
@@ -78,12 +78,6 @@ const RoomCard = ({ room }) => {
                     style={{ background: 'linear-gradient(135deg,#F9A24D,#ff6b35)', color: '#0a0a1a', boxShadow: '0 0 15px rgba(249,162,77,0.25)' }}>
                     <LogIn size={13} /> Access Room
                 </button>
-            )}
-            {status === 'locked' && (
-                <div className="flex items-center gap-1.5">
-                    <Lock size={12} className="text-gray-600" />
-                    <span className="text-xs text-gray-600">Not started</span>
-                </div>
             )}
         </div>
     );

@@ -2,13 +2,64 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
     ChevronLeft, FileText, ExternalLink, CheckCircle,
-    Lock, Eye, EyeOff, Loader, AlertCircle, Palette, Landmark, Wrench
+    Lock, Eye, EyeOff, Loader, AlertCircle, Palette, Landmark, Wrench,
+    Scale, Coins
 } from 'lucide-react';
 import { useParticipant } from '../../context/ParticipantContext';
 import API from '../../services/api';
 
 // ─── Room Data ────────────────────────────────────────────────────────────────
 const ROOM_DATA = {
+    room1: {
+        id: 'room1',
+        name: 'City Law Chamber',
+        subtitle: 'Smart Contracts & Trustless Agreements',
+        icon: Scale,
+        color: '#462F4D',
+        bg: '/room1.jpeg',
+        about: `Welcome to the City Law Chamber — the foundation of BlockCity. In this room, you will understand why smart contracts are needed and how they replace human trust with code. Traditional systems rely on banks, governments, lawyers, and companies. Smart contracts eliminate intermediaries and execute agreements automatically on blockchain networks like Ethereum. By the end of this room, you will deploy your first secure smart contract and become an Official Lawmaker of BlockCity.`,
+
+        tasks: [
+            'Learn what a smart contract is and how it runs on Ethereum',
+            'Understand gas fees, deployment, and blockchain transactions',
+            'Explore Externally Owned Accounts (EOA) vs Smart Contract Accounts',
+            'Understand state variables, global variables (msg.sender, msg.value)',
+            'Learn value types vs reference types in Solidity',
+            'Understand constructors and ownership logic',
+            'Deploy the CityLaw contract in Remix',
+            'Add laws and protect functions using onlyOwner modifier',
+            'Verify event logs and demonstrate access control security',
+            'Debug common smart contract mistakes',
+        ],
+
+        docLink: 'https://placeholder-doc-link.com/room1',
+        platformLink: 'https://remix.ethereum.org',
+        platformLabel: 'Open Remix IDE',
+        entryPhrase: 'SMART CONTRACT',
+    },
+    room2: {
+        id: 'room2',
+        name: 'Treasury Mint',
+        subtitle: 'ERC-20 Tokens & Digital Economy',
+        icon: Coins,
+        color: '#947B96',
+        bg: '/room2.jpeg',
+        about: `The City Treasury Mint is where BlockCity builds its digital economy. In this room, you will explore ERC-20 tokens — the standard that powers most cryptocurrencies in Web3. You’ll learn how tokens track balances using mappings, how minting creates supply, and how secure access control prevents unlimited printing. By the end, you will deploy your own CityToken and interact with it just like a real cryptocurrency.`,
+
+        tasks: [
+            'Understand what ERC-20 is and why standards matter in blockchain ecosystems',
+            'Learn how mapping(address => uint256) works as a balance ledger',
+            'Import and use OpenZeppelin’s audited ERC-20 implementation',
+            'Deploy your CityToken smart contract in Remix',
+            'Mint tokens to your wallet and verify balance using readableBalance()',
+            'Transfer tokens to another wallet and confirm transaction on block explorer',
+        ],
+
+        docLink: 'https://placeholder-doc-link.com/room2',
+        platformLink: 'https://remix.ethereum.org',
+        platformLabel: 'Open Remix IDE',
+        entryPhrase: 'ERC-20',
+    },
     room3: {
         id: 'room3',
         name: 'Identity Bureau',

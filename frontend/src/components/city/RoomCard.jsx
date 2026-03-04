@@ -7,19 +7,17 @@ const RoomCard = ({ room }) => {
 
     const statusColors = {
         open: 'border-green-500 bg-green-500/10',
-        locked: 'border-gray-600 bg-gray-700/20',
         completed: 'border-gold bg-yellow-500/10',
     };
 
     const statusLabels = {
         open: '🟢 Open',
-        locked: '🔒 Locked',
         completed: '✅ Completed',
     };
 
     return (
         <div
-            className={`rounded-xl border-2 p-6 transition-all hover:scale-105 flex flex-col justify-between h-full ${statusColors[room.status] || statusColors.locked
+            className={`rounded-xl border-2 p-6 transition-all hover:scale-105 flex flex-col justify-between h-full ${statusColors[room.status] || statusColors.open
                 }`}
         >
             <div>
@@ -28,19 +26,17 @@ const RoomCard = ({ room }) => {
                 </h3>
                 <p className="text-gray-400 mb-4">{room.description}</p>
                 <span className="text-sm font-medium block mb-4">
-                    {statusLabels[room.status] || 'Unknown'}
+                    {statusLabels[room.status] || statusLabels.open}
                 </span>
             </div>
 
-            {room.status === 'open' || room.status === 'completed' ? (
-                <button
-                    onClick={() => navigate(`/participant/room/${room.id}`)}
-                    className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 bg-green-500/15 text-green-400 border border-green-500/30 rounded-lg hover:bg-green-500/25 transition-colors font-medium text-sm"
-                >
-                    <LogIn size={16} />
-                    Access Room
-                </button>
-            ) : null}
+            <button
+                onClick={() => navigate(`/participant/room/${room.id}`)}
+                className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 bg-green-500/15 text-green-400 border border-green-500/30 rounded-lg hover:bg-green-500/25 transition-colors font-medium text-sm"
+            >
+                <LogIn size={16} />
+                Access Room
+            </button>
         </div>
     );
 };
