@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
     ChevronLeft, FileText, ExternalLink, CheckCircle,
-    Lock, Eye, EyeOff, Loader, AlertCircle, Palette, Landmark, Wrench,
-    Scale, Coins
+    Lock, Eye, EyeOff, Loader, AlertCircle,
+    Palette, Landmark, Wrench, Scale, Briefcase
 } from 'lucide-react';
 import { useParticipant } from '../../context/ParticipantContext';
 import API from '../../services/api';
@@ -12,51 +12,41 @@ import API from '../../services/api';
 const ROOM_DATA = {
     room1: {
         id: 'room1',
-        name: 'City Law Chamber',
-        subtitle: 'Smart Contracts & Trustless Agreements',
+        name: 'Law Foundry',
+        subtitle: 'Smart Contract Basics & Solidity',
         icon: Scale,
-        color: '#462F4D',
+        color: '#F9A24D',
         bg: '/room1.jpeg',
-        about: `Welcome to the City Law Chamber — the foundation of BlockCity. In this room, you will understand why smart contracts are needed and how they replace human trust with code. Traditional systems rely on banks, governments, lawyers, and companies. Smart contracts eliminate intermediaries and execute agreements automatically on blockchain networks like Ethereum. By the end of this room, you will deploy your first secure smart contract and become an Official Lawmaker of BlockCity.`,
-
+        about: `The Law Foundry is where BlockCity's legal backbone is written — in code. Smart contracts are self-executing programs that live on the blockchain. No lawyers, no middlemen. Once deployed, they run exactly as written, forever. In this room you will write your first Solidity contract, understand how ownership works on-chain, and learn why a single modifier can protect an entire system from misuse.`,
         tasks: [
-            'Learn what a smart contract is and how it runs on Ethereum',
-            'Understand gas fees, deployment, and blockchain transactions',
-            'Explore Externally Owned Accounts (EOA) vs Smart Contract Accounts',
-            'Understand state variables, global variables (msg.sender, msg.value)',
-            'Learn value types vs reference types in Solidity',
-            'Understand constructors and ownership logic',
-            'Deploy the CityLaw contract in Remix',
-            'Add laws and protect functions using onlyOwner modifier',
-            'Verify event logs and demonstrate access control security',
-            'Debug common smart contract mistakes',
+            'Set up Remix IDE and create your first .sol file with the correct SPDX header and pragma version',
+            'Write a CityLaw contract with a string public cityName and an address public owner',
+            'Add a constructor() that sets cityName and assigns msg.sender as owner',
+            'Implement an onlyOwner modifier using require() to restrict sensitive functions',
+            'Add an addLaw() function that emits a LawAdded event — deploy and test in Remix VM',
         ],
-
-        docLink: 'https://placeholder-doc-link.com/room1',
-        platformLink: 'https://remix.ethereum.org',
+        docLink: 'https://docs.google.com/document/d/10AWgYaTumstXQezTeBq4s3Bau_iTAitcZvKU_GRDJnE/edit?tab=t.0',
+        platformLink: 'https://remix.ethereum.org/?nomobileredirect',
         platformLabel: 'Open Remix IDE',
-        entryPhrase: 'SMART CONTRACT',
+        entryPhrase: 'modifier',
     },
     room2: {
         id: 'room2',
         name: 'Treasury Mint',
-        subtitle: 'ERC-20 Tokens & Digital Economy',
-        icon: Coins,
-        color: '#947B96',
+        subtitle: 'ERC-20 Tokens & DeFi',
+        icon: Briefcase,
+        color: '#f59e0b',
         bg: '/room2.jpeg',
-        about: `The City Treasury Mint is where BlockCity builds its digital economy. In this room, you will explore ERC-20 tokens — the standard that powers most cryptocurrencies in Web3. You’ll learn how tokens track balances using mappings, how minting creates supply, and how secure access control prevents unlimited printing. By the end, you will deploy your own CityToken and interact with it just like a real cryptocurrency.`,
-
+        about: `The Treasury Mint is where BlockCity's economy is born. Every city needs currency — and in Web3, you can mint your own in under 50 lines of code. ERC-20 is the universal token standard that makes all fungible tokens interoperable across wallets, exchanges, and dApps. You will deploy a live token contract, mint supply to your wallet, and transfer tokens to teammates — all on a real testnet.`,
         tasks: [
-            'Understand what ERC-20 is and why standards matter in blockchain ecosystems',
-            'Learn how mapping(address => uint256) works as a balance ledger',
-            'Import and use OpenZeppelin’s audited ERC-20 implementation',
-            'Deploy your CityToken smart contract in Remix',
-            'Mint tokens to your wallet and verify balance using readableBalance()',
-            'Transfer tokens to another wallet and confirm transaction on block explorer',
+            'Understand fungibility — why 1 CTK always equals 1 CTK (unlike NFTs)',
+            'Import OpenZeppelin ERC20.sol and Ownable.sol via the @ import path in Remix',
+            'Deploy CityToken with name "CityToken" and symbol "CTK" — mint 1000 tokens to yourself',
+            'Call readableBalance() to verify your balance, then transfer 50 CTK to a teammate',
+            'Copy the transaction hash and verify it on Polygonscan Amoy testnet explorer',
         ],
-
-        docLink: 'https://placeholder-doc-link.com/room2',
-        platformLink: 'https://remix.ethereum.org',
+        docLink: 'https://docs.google.com/document/d/1rDU63mRj_yq9IERtb-DDr2FPSSd37yE3v31CcHk-DKw/edit?usp=sharing',
+        platformLink: 'https://remix.ethereum.org/',
         platformLabel: 'Open Remix IDE',
         entryPhrase: 'ERC-20',
     },
@@ -76,8 +66,8 @@ const ROOM_DATA = {
             'Mint your badge NFT and verify ownership via ownerOf()',
         ],
         docLink: 'https://placeholder-doc-link.com/room3',
-        platformLink: 'https://remix.ethereum.org',
-        platformLabel: 'Open Remix IDE',
+        platformLink: 'https://remix.ethereum.org/#lang=en&optimize&runs=200&evmVersion&version=soljson-v0.8.31+commit.fd3a2265.js',
+        platformLabel: 'Open Remix IDE (pre-configured)',
         entryPhrase: 'tokenURI',
     },
     room4: {
@@ -95,8 +85,8 @@ const ROOM_DATA = {
             'Deploy to testnet and create a live 10-minute proposal',
             'Cast votes from multiple wallet addresses and execute the result',
         ],
-        docLink: 'https://placeholder-doc-link.com/room4',
-        platformLink: 'https://remix.ethereum.org',
+        docLink: 'https://docs.google.com/document/d/1lr9zT55r-jPxEjz4raodZfIfyTYXbd2S6PqALyj9xn0/edit?usp=sharing',
+        platformLink: 'https://remix.ethereum.org/',
         platformLabel: 'Open Remix IDE',
         entryPhrase: 'quorum',
     },
@@ -174,7 +164,10 @@ const CompleteModal = ({ room, citizenId, onClose, onSuccess }) => {
                 >
                     Mark Room as Complete
                 </h2>
-                <p className="text-gray-500 text-sm text-center mb-6" style={{ fontFamily: "'Rajdhani', sans-serif" }}>
+                <p
+                    className="text-gray-500 text-sm text-center mb-6"
+                    style={{ fontFamily: "'Rajdhani', sans-serif" }}
+                >
                     Enter the secret code provided by your room mentor
                 </p>
 
@@ -200,8 +193,10 @@ const CompleteModal = ({ room, citizenId, onClose, onSuccess }) => {
                 </div>
 
                 {error && (
-                    <div className="flex items-center gap-2 px-3 py-2 rounded-lg mb-4 text-sm"
-                        style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', color: '#f87171' }}>
+                    <div
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg mb-4 text-sm"
+                        style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', color: '#f87171' }}
+                    >
                         <AlertCircle size={14} /> {error}
                     </div>
                 )}
@@ -242,8 +237,10 @@ const CompleteModal = ({ room, citizenId, onClose, onSuccess }) => {
 
 // ─── Success Banner ───────────────────────────────────────────────────────────
 const SuccessBanner = ({ room, onBack }) => (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4"
-        style={{ background: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(16px)' }}>
+    <div
+        className="fixed inset-0 z-50 flex items-center justify-center px-4"
+        style={{ background: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(16px)' }}
+    >
         <div className="text-center max-w-sm">
             <div
                 className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
@@ -261,10 +258,17 @@ const SuccessBanner = ({ room, onBack }) => (
             >
                 Submitted!
             </h2>
-            <p className="text-gray-400 text-sm mb-2" style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: '16px' }}>
-                Your completion for <span style={{ color: room.color }}>{room.name}</span> is in the admin queue.
+            <p
+                className="text-gray-400 mb-2"
+                style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: '16px' }}
+            >
+                Your completion for{' '}
+                <span style={{ color: room.color }}>{room.name}</span> is in the admin queue.
             </p>
-            <p className="text-gray-600 text-xs mb-8" style={{ fontFamily: "'Rajdhani', sans-serif" }}>
+            <p
+                className="text-gray-600 text-xs mb-8"
+                style={{ fontFamily: "'Rajdhani', sans-serif" }}
+            >
                 Default 10 points will be added. Top performers may receive bonus points from the admin.
             </p>
             <button
@@ -317,26 +321,20 @@ const RoomPage = () => {
 
     return (
         <>
-            {/* ── Font injection ───────────────────────────────────────── */}
+            {/* ── Fonts ────────────────────────────────────────────────── */}
             <style>{`
                 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap');
-
-                .room-page-heading {
-                    font-family: 'Orbitron', sans-serif;
-                }
-                .room-page-body {
-                    font-family: 'Rajdhani', sans-serif;
-                }
                 .room-section-label {
                     font-family: 'Orbitron', sans-serif;
                     font-size: 10px;
                     letter-spacing: 0.25em;
+                    text-transform: uppercase;
                 }
             `}</style>
 
             <div className="relative min-h-screen">
 
-                {/* ── Fixed full-page background image ────────────────── */}
+                {/* ── Fixed full-page background image ─────────────────── */}
                 <div
                     className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
                     style={{
@@ -345,7 +343,7 @@ const RoomPage = () => {
                     }}
                 />
 
-                {/* Fixed colour tint overlay — room accent colour */}
+                {/* Fixed room-colour tint overlay */}
                 <div
                     className="fixed inset-0 z-0"
                     style={{
@@ -353,13 +351,13 @@ const RoomPage = () => {
                     }}
                 />
 
-                {/* ── All scrollable content sits above the fixed bg ───── */}
+                {/* ── All scrollable content ───────────────────────────── */}
                 <div className="relative z-10 min-h-screen">
 
-                    {/* ── Hero section ─────────────────────────────────── */}
+                    {/* ── Hero ─────────────────────────────────────────── */}
                     <div className="relative h-[58vh] min-h-[380px] flex flex-col justify-end">
 
-                        {/* Bottom fade so hero blends into content */}
+                        {/* Bottom fade into content */}
                         <div
                             className="absolute inset-0 pointer-events-none"
                             style={{ background: 'linear-gradient(180deg, transparent 40%, rgba(10,10,26,0.85) 100%)' }}
@@ -384,9 +382,10 @@ const RoomPage = () => {
                             </button>
                         </div>
 
-                        {/* Hero title content */}
+                        {/* Title area */}
                         <div className="relative z-10 px-4 pb-10 max-w-3xl mx-auto w-full">
-                            {/* Badges row */}
+
+                            {/* Pills */}
                             <div className="flex items-center gap-2 mb-4 flex-wrap">
                                 <span
                                     className="text-[9px] font-bold tracking-[0.35em] uppercase px-3 py-1.5 rounded-full"
@@ -413,7 +412,7 @@ const RoomPage = () => {
                                 </span>
                             </div>
 
-                            {/* Icon + Title */}
+                            {/* Icon + name */}
                             <div className="flex items-end gap-5">
                                 <div
                                     className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 mb-1"
@@ -438,7 +437,7 @@ const RoomPage = () => {
                                         {room.name}
                                     </h1>
                                     <p
-                                        className="text-base font-semibold tracking-wider"
+                                        className="text-base font-semibold"
                                         style={{
                                             color: `${room.color}cc`,
                                             fontFamily: "'Rajdhani', sans-serif",
@@ -453,15 +452,12 @@ const RoomPage = () => {
                         </div>
                     </div>
 
-                    {/* ── Scrollable content sections ──────────────────── */}
-                    <div className="max-w-3xl mx-auto px-4 pb-36 space-y-6 mt-0">
+                    {/* ── Content ──────────────────────────────────────── */}
+                    <div className="max-w-3xl mx-auto px-4 pb-36 space-y-6">
 
                         {/* About */}
                         <section>
-                            <p
-                                className="room-section-label mb-3 uppercase"
-                                style={{ color: room.color }}
-                            >
+                            <p className="room-section-label mb-3" style={{ color: room.color }}>
                                 About This Room
                             </p>
                             <div
@@ -470,7 +466,7 @@ const RoomPage = () => {
                                     background: 'rgba(10,14,30,0.75)',
                                     border: `1px solid ${room.color}18`,
                                     backdropFilter: 'blur(12px)',
-                                    boxShadow: `0 4px 30px rgba(0,0,0,0.4)`,
+                                    boxShadow: '0 4px 30px rgba(0,0,0,0.4)',
                                 }}
                             >
                                 <p
@@ -537,7 +533,7 @@ const RoomPage = () => {
                                 }}
                                 onMouseEnter={e => {
                                     e.currentTarget.style.borderColor = `${room.color}60`;
-                                    e.currentTarget.style.background = `rgba(10,14,30,0.85)`;
+                                    e.currentTarget.style.background = 'rgba(10,14,30,0.85)';
                                 }}
                                 onMouseLeave={e => {
                                     e.currentTarget.style.borderColor = `${room.color}25`;
@@ -613,7 +609,7 @@ const RoomPage = () => {
                     </div>
                 </div>
 
-                {/* ── Sticky Mark as Complete bar ──────────────────────── */}
+                {/* ── Sticky Mark as Complete ───────────────────────────── */}
                 <div
                     className="fixed bottom-0 left-0 right-0 z-30 px-4 py-4"
                     style={{
@@ -646,7 +642,7 @@ const RoomPage = () => {
 
             </div>
 
-            {/* ── Modal ──────────────────────────────────────────────────── */}
+            {/* Modal */}
             {showModal && !submitted && (
                 <CompleteModal
                     room={room}
@@ -656,7 +652,7 @@ const RoomPage = () => {
                 />
             )}
 
-            {/* ── Success ──────────────────────────────────────────────── */}
+            {/* Success */}
             {submitted && (
                 <SuccessBanner room={room} onBack={() => navigate('/participant/dashboard')} />
             )}
