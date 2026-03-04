@@ -1,6 +1,7 @@
-import React from 'react';
-import { RefreshCw } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { RefreshCw, Loader } from 'lucide-react';
 import { motion } from 'framer-motion';
+import API from '../../services/api';
 
 const getTierInfo = (rank) => {
     if (rank <= 3) return { label: 'Top 3', color: '#F9A24D', borderColor: 'rgba(249,162,77,0.3)', bgColor: 'rgba(249,162,77,0.1)' };
@@ -10,19 +11,30 @@ const getTierInfo = (rank) => {
 };
 
 const Leaderboard = () => {
-    // Hardcoded leaderboard data
-    const leaderboard = [
-        { _id: "0x7A2F", citizenId: "BC-0x7A2F", name: "Alex Chen", totalScore: 8950 },
-        { _id: "0x9B4E", citizenId: "BC-0x9B4E", name: "Sarah Kumar", totalScore: 8720 },
-        { _id: "0x3C8D", citizenId: "BC-0x3C8D", name: "Marcus Johnson", totalScore: 8450 },
-        { _id: "0x5F1A", citizenId: "BC-0x5F1A", name: "Emily Rodriguez", totalScore: 7890 },
-        { _id: "0x2D9C", citizenId: "BC-0x2D9C", name: "James Park", totalScore: 7650 },
-        { _id: "0x8E3B", citizenId: "BC-0x8E3B", name: "Yuki Tanaka", totalScore: 6950 },
-        { _id: "0x1A4F", citizenId: "BC-0x1A4F", name: "Priya Patel", totalScore: 6820 },
-        { _id: "0x4C7D", citizenId: "BC-0x4C7D", name: "David Kim", totalScore: 6450 },
-    ];
+    const [leaderboard, setLeaderboard] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const displayEntries = leaderboard.slice(0, 10);
+    const fetchLeaderboard = async () => {
+        try {
+            setLoading(true);
+            const res = await API.get('/participants');
+            // Backend already sorts by totalScore desc, but just to be sure:
+            const sorted = res.data.sort((a, b) => (b.totalScore || 0) - (a.totalScore || 0));
+            setLeaderboard(sorted);
+        } catch (error) {
+            console.error('Error fetching leaderboard:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchLeaderboard();
+    }, []);
+
+    const nonZeroLeaderboard = leaderboard.filter(p => (p.totalScore || 0) > 0);
+    const displayEntries = nonZeroLeaderboard.slice(0, 25);
+    const allZeroScore = leaderboard.length > 0 && nonZeroLeaderboard.length === 0;
 
     return (
         <section id="leaderboard" className="py-20 px-4 bg-[#0a0a1a] overflow-hidden">
@@ -46,11 +58,12 @@ const Leaderboard = () => {
                         >
                             LIVE LEADERBOARD
                         </h2>
-                        <RefreshCw
-                            size={24}
-                            className="text-[#F9A24D] animate-spin"
-                            style={{ animationDuration: '3s' }}
-                        />
+                        <button onClick={fetchLeaderboard} disabled={loading} className="focus:outline-none">
+                            <RefreshCw
+                                size={24}
+                                className={`text-[#F9A24D] ${loading ? 'animate-spin' : 'hover:rotate-180 transition-transform duration-500'}`}
+                            />
+                        </button>
                     </div>
                     <p className="text-gray-400">
                         Top citizens competing for BlockCity dominance
@@ -68,9 +81,8 @@ const Leaderboard = () => {
                 >
                     <div className="min-w-[700px] w-full">
                         {/* Table Header */}
-                        <div className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-white/5">
+                        <div className="grid grid-cols-9 gap-4 px-6 py-4 border-b border-white/5">
                             <span className="col-span-2 text-xs font-semibold text-gray-500 uppercase tracking-widest">Rank</span>
-                            <span className="col-span-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">Citizen ID</span>
                             <span className="col-span-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">Name</span>
                             <span className="col-span-2 text-xs font-semibold text-gray-500 uppercase tracking-widest">Points</span>
                             <span className="col-span-2 text-xs font-semibold text-gray-500 uppercase tracking-widest text-right">Tier</span>
@@ -78,7 +90,7 @@ const Leaderboard = () => {
 
                         {/* Rows */}
                         <div className="max-h-[500px] overflow-y-auto">
-                            {displayEntries.map((entry, index) => {
+                            {!allZeroScore && displayEntries.map((entry, index) => {
                                 const rank = index + 1;
                                 const tier = getTierInfo(rank);
                                 const isTopThree = rank <= 3;
@@ -86,7 +98,7 @@ const Leaderboard = () => {
                                 return (
                                     <div
                                         key={entry._id || index}
-                                        className="grid grid-cols-12 gap-4 items-center px-6 py-4 border-b transition-colors hover:bg-white/[0.03]"
+                                        className="grid grid-cols-9 gap-4 items-center px-6 py-4 border-b transition-colors hover:bg-white/[0.03]"
                                         style={{
                                             borderColor: isTopThree ? 'rgba(249,162,77,0.15)' : 'rgba(255,255,255,0.03)',
                                             backgroundColor: isTopThree ? 'rgba(249,162,77,0.03)' : 'transparent',
@@ -103,13 +115,6 @@ const Leaderboard = () => {
                                                 }}
                                             >
                                                 #{rank}
-                                            </span>
-                                        </div>
-
-                                        {/* Citizen ID */}
-                                        <div className="col-span-3">
-                                            <span className="text-sm font-mono text-gray-400">
-                                                {entry.citizenId || `BC-${entry._id?.slice(-4).toUpperCase() || '0000'}`}
                                             </span>
                                         </div>
 
@@ -155,40 +160,29 @@ const Leaderboard = () => {
                     </div>
                 </div>
 
-                {leaderboard.length === 0 && (
+                {loading ? (
+                    <div className="flex justify-center items-center py-20">
+                        <Loader size={48} className="text-[#F9A24D] animate-spin" />
+                    </div>
+                ) : allZeroScore ? (
+                    <div className="text-center py-16 text-gray-500">
+                        <p className="text-lg text-white" style={{ fontFamily: "'Orbitron', sans-serif", color: '#F9A24D' }}>
+                            Complete missions to win!
+                        </p>
+                        <p className="text-sm mt-3 text-gray-400">
+                            The leaderboard is waiting for the first points to be scored.
+                        </p>
+                    </div>
+                ) : leaderboard.length === 0 ? (
                     <div className="text-center py-16 text-gray-500">
                         <p className="text-lg" style={{ fontFamily: "'Orbitron', sans-serif" }}>
                             No entries yet
+
                         </p>
                         <p className="text-sm mt-2">The competition hasn't started!</p>
                     </div>
-                )}
+                ) : null}
 
-                {/* View Full Leaderboard */}
-                {leaderboard.length > 0 && (
-                    <div className="mt-10 flex justify-center">
-                        <button
-                            className="px-8 py-3 rounded-xl text-sm font-bold tracking-widest uppercase transition-all duration-300 hover:scale-105"
-                            style={{
-                                border: '2px solid rgba(249,162,77,0.4)',
-                                color: '#F9A24D',
-                                boxShadow: '0 0 20px rgba(249,162,77,0.1)',
-                            }}
-                            onMouseEnter={(e) => {
-                                e.target.style.borderColor = '#F9A24D';
-                                e.target.style.boxShadow = '0 0 35px rgba(249,162,77,0.25)';
-                                e.target.style.backgroundColor = 'rgba(249,162,77,0.08)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.borderColor = 'rgba(249,162,77,0.4)';
-                                e.target.style.boxShadow = '0 0 20px rgba(249,162,77,0.1)';
-                                e.target.style.backgroundColor = 'transparent';
-                            }}
-                        >
-                            VIEW FULL LEADERBOARD
-                        </button>
-                    </div>
-                )}
             </motion.div>
         </section>
     );
