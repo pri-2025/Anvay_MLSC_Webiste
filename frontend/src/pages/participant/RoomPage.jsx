@@ -18,17 +18,12 @@ const ROOM_DATA = {
         color: '#F9A24D',
         bg: '/room1.jpeg',
         about: `The Law Foundry is where BlockCity's legal backbone is written — in code. Smart contracts are self-executing programs that live on the blockchain. No lawyers, no middlemen. Once deployed, they run exactly as written, forever. In this room you will write your first Solidity contract, understand how ownership works on-chain, and learn why a single modifier can protect an entire system from misuse.`,
-        tasks: [
-            'Set up Remix IDE and create your first .sol file with the correct SPDX header and pragma version',
-            'Write a CityLaw contract with a string public cityName and an address public owner',
-            'Add a constructor() that sets cityName and assigns msg.sender as owner',
-            'Implement an onlyOwner modifier using require() to restrict sensitive functions',
-            'Add an addLaw() function that emits a LawAdded event — deploy and test in Remix VM',
-        ],
         docLink: 'https://docs.google.com/document/d/10AWgYaTumstXQezTeBq4s3Bau_iTAitcZvKU_GRDJnE/edit?tab=t.0',
         platformLink: 'https://remix.ethereum.org/?nomobileredirect',
         platformLabel: 'Open Remix IDE',
         entryPhrase: 'modifier',
+        // Password required to mark room as complete
+        password: 'SmartContract',
     },
     room2: {
         id: 'room2',
@@ -38,17 +33,12 @@ const ROOM_DATA = {
         color: '#f59e0b',
         bg: '/room2.jpeg',
         about: `The Treasury Mint is where BlockCity's economy is born. Every city needs currency — and in Web3, you can mint your own in under 50 lines of code. ERC-20 is the universal token standard that makes all fungible tokens interoperable across wallets, exchanges, and dApps. You will deploy a live token contract, mint supply to your wallet, and transfer tokens to teammates — all on a real testnet.`,
-        tasks: [
-            'Understand fungibility — why 1 CTK always equals 1 CTK (unlike NFTs)',
-            'Import OpenZeppelin ERC20.sol and Ownable.sol via the @ import path in Remix',
-            'Deploy CityToken with name "CityToken" and symbol "CTK" — mint 1000 tokens to yourself',
-            'Call readableBalance() to verify your balance, then transfer 50 CTK to a teammate',
-            'Copy the transaction hash and verify it on Polygonscan Amoy testnet explorer',
-        ],
         docLink: 'https://docs.google.com/document/d/1rDU63mRj_yq9IERtb-DDr2FPSSd37yE3v31CcHk-DKw/edit?usp=sharing',
         platformLink: 'https://remix.ethereum.org/',
         platformLabel: 'Open Remix IDE',
         entryPhrase: 'ERC-20',
+        // Password required to mark room as complete
+        password: 'Minting',
     },
     room3: {
         id: 'room3',
@@ -58,17 +48,12 @@ const ROOM_DATA = {
         color: '#06b6d4',
         bg: '/room3.jpeg',
         about: `The Citizen Identity Bureau is where digital identity meets blockchain permanence. In this room, you will explore Non-Fungible Tokens (NFTs) — unique digital assets that prove ownership on-chain. You'll learn how ERC-721 tokens work, how metadata is stored on IPFS, and how to mint your very own BlockCity Citizen Badge. Every badge is unique to your journey — no two are identical.`,
-        tasks: [
-            'Understand the difference between ERC-20 (fungible) and ERC-721 (non-fungible) tokens',
-            'Write and deploy a CitizenBadge smart contract using OpenZeppelin ERC-721',
-            'Create your personalised NFT metadata JSON with your role, rooms, and tier',
-            'Upload metadata to IPFS using nft.storage',
-            'Mint your badge NFT and verify ownership via ownerOf()',
-        ],
         docLink: 'https://placeholder-doc-link.com/room3',
         platformLink: 'https://remix.ethereum.org/#lang=en&optimize&runs=200&evmVersion&version=soljson-v0.8.31+commit.fd3a2265.js',
         platformLabel: 'Open Remix IDE (pre-configured)',
         entryPhrase: 'tokenURI',
+        // Password required to mark room as complete
+        password: 'Metadata',
     },
     room4: {
         id: 'room4',
@@ -78,17 +63,12 @@ const ROOM_DATA = {
         color: '#c084fc',
         bg: '/room4.jpeg',
         about: `The City Council Chamber is where democracy meets the blockchain. This room covers Decentralised Autonomous Organisations (DAOs) — communities governed by code, not people. You will build an on-chain voting system where every vote is a real blockchain transaction, permanently recorded and tamper-proof. Learn how proposals are created, how votes are counted, and how quorum prevents minority capture of governance decisions.`,
-        tasks: [
-            'Understand the DAO model — rules encoded in contracts, enforced by code',
-            'Build a CityVoting contract with createProposal(), vote(), and executeProposal()',
-            'Implement double-vote prevention using nested mapping(uint => mapping(address => bool))',
-            'Deploy to testnet and create a live 10-minute proposal',
-            'Cast votes from multiple wallet addresses and execute the result',
-        ],
         docLink: 'https://docs.google.com/document/d/1lr9zT55r-jPxEjz4raodZfIfyTYXbd2S6PqALyj9xn0/edit?usp=sharing',
         platformLink: 'https://remix.ethereum.org/',
         platformLabel: 'Open Remix IDE',
         entryPhrase: 'quorum',
+        // Password required to mark room as complete
+        password: 'Governance',
     },
     room5: {
         id: 'room5',
@@ -98,17 +78,12 @@ const ROOM_DATA = {
         color: '#34d399',
         bg: '/room5.jpeg',
         about: `The City Control Center is your mission to connect everything together. This is where smart contracts meet the real world — through a browser interface. You will build a Web3 frontend using HTML, JavaScript, and the Ethers.js library. No frameworks, no install — just one file that talks to the blockchain. Think of it as building the remote control for your city — the website is the remote, the blockchain is the TV, and MetaMask is the battery.`,
-        tasks: [
-            'Set up Ethers.js via CDN — no npm, no install, works in any browser',
-            'Connect MetaMask using window.ethereum and eth_requestAccounts',
-            'Read live data from your deployed CityLaw contract using a Provider',
-            'Send write transactions using a Signer and handle MetaMask confirmations',
-            'Build a full BlockCity Hub connecting all 4 contracts simultaneously',
-        ],
         docLink: 'https://placeholder-doc-link.com/room5',
         platformLink: 'https://remix.ethereum.org',
         platformLabel: 'Open Remix IDE',
         entryPhrase: 'provider',
+        // Password required to mark room as complete
+        password: 'Signer',
     },
 };
 
@@ -121,18 +96,16 @@ const CompleteModal = ({ room, citizenId, onClose, onSuccess }) => {
 
     const handleSubmit = async () => {
         if (!code.trim()) { setError('Please enter the secret code.'); return; }
+        // Check password — validated client-side
+        if (code.trim() !== room.password) { setError('Incorrect Password'); return; }
         setLoading(true);
         setError('');
         try {
-            await API.post('/participants/stamp', {
-                citizenId,
-                roomId: room.id,
-                roomName: room.name,
-                secretCode: code.trim(),
-            });
+            // Increment room score by 10 in Firestore for this participant
+            await API.put(`/participants/${citizenId}/complete-room`, { roomId: room.id });
             onSuccess();
         } catch (err) {
-            setError(err?.response?.data?.message || 'Invalid code or submission failed. Try again.');
+            setError(err?.response?.data?.message || 'Failed to update score. Try again.');
         } finally {
             setLoading(false);
         }
@@ -478,43 +451,6 @@ const RoomPage = () => {
                             </div>
                         </section>
 
-                        {/* Tasks */}
-                        <section>
-                            <p className="room-section-label mb-3" style={{ color: room.color }}>
-                                Your Tasks
-                            </p>
-                            <div className="space-y-2">
-                                {room.tasks.map((task, i) => (
-                                    <div
-                                        key={i}
-                                        className="flex items-start gap-3 rounded-xl px-4 py-3"
-                                        style={{
-                                            background: 'rgba(10,14,30,0.65)',
-                                            border: `1px solid ${room.color}12`,
-                                            backdropFilter: 'blur(10px)',
-                                        }}
-                                    >
-                                        <span
-                                            className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold mt-0.5"
-                                            style={{
-                                                background: `${room.color}20`,
-                                                color: room.color,
-                                                border: `1px solid ${room.color}45`,
-                                                fontFamily: "'Orbitron', sans-serif",
-                                            }}
-                                        >
-                                            {i + 1}
-                                        </span>
-                                        <p
-                                            className="text-gray-300 leading-relaxed"
-                                            style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: '15px' }}
-                                        >
-                                            {task}
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
-                        </section>
 
                         {/* Resource Document */}
                         <section>

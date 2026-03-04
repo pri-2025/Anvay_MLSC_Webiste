@@ -150,9 +150,43 @@ const updateFinalProjectScore = async (req, res, next) => {
     }
 };
 
+// @desc    Participant completes a room — increment room score by 10
+// @route   PUT /api/participants/:uce/complete-room
+const completeRoom = async (req, res, next) => {
+    try {
+        const uce = req.params.uce.toUpperCase();
+        const { roomId } = req.body; // e.g. 'room1', 'room2', ...
+
+        if (!roomId || !['room1', 'room2', 'room3', 'room4', 'room5'].includes(roomId)) {
+            return res.status(400).json({ message: 'Invalid roomId' });
+        }
+
+        const docRef = participantsCollection.doc(uce);
+        const doc = await docRef.get();
+        if (!doc.exists) return res.status(404).json({ message: 'Participant not found' });
+
+        const rawData = doc.data();
+
+        // Prevent double-completion: only add if room score is currently 0
+        if (Number(rawData[roomId] || 0) > 0) {
+            return res.status(400).json({ message: 'Room already completed' });
+        }
+
+        const updatedRoomScore = 10;
+        const updated = { ...rawData, [roomId]: updatedRoomScore };
+        const totalScore = calcTotal(updated);
+
+        await docRef.update({ [roomId]: updatedRoomScore, totalScore });
+        res.json({ message: 'Room completed', uce, roomId, roomScore: updatedRoomScore, totalScore });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getParticipants,
     getParticipantByUce,
     updateBonusScore,
-    updateFinalProjectScore
+    updateFinalProjectScore,
+    completeRoom
 };

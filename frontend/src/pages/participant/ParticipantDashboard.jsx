@@ -54,39 +54,23 @@ const RoomCard = ({ room }) => {
                     <span className="text-xl">{ROOM_ICONS[room.name] || '🏛️'}</span>
                     <div>
                         <h3 className="text-base font-heading font-bold text-white">{room.name}</h3>
-                        <p className="text-xs text-gray-500">{room.points ?? 100} Points</p>
                     </div>
                 </div>
-                <span
-                    className="text-[9px] font-bold tracking-wider px-2 py-1 rounded-full flex-shrink-0"
-                    style={{
-                        background: isCompleted ? 'rgba(52,211,153,0.12)' : 'rgba(249,162,77,0.1)',
-                        color: accentColor,
-                        border: `1px solid ${borderColor}`,
-                    }}
-                >
-                    {isCompleted ? 'COMPLETED' : 'AVAILABLE'}
-                </span>
+                {isCompleted && (
+                    <span
+                        className="text-[9px] font-bold tracking-wider px-2 py-1 rounded-full flex-shrink-0"
+                        style={{
+                            background: 'rgba(52,211,153,0.12)',
+                            color: '#34d399',
+                            border: '1px solid rgba(52,211,153,0.3)',
+                        }}
+                    >
+                        COMPLETED
+                    </span>
+                )}
             </div>
 
             <p className="text-gray-400 text-xs mb-3 leading-relaxed">{room.description}</p>
-
-            <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[10px] text-gray-500">Progress</span>
-                <span className="text-[10px] font-bold text-white">{progress}/{room.maxProgress ?? 100}</span>
-            </div>
-            <div className="h-1.5 rounded-full overflow-hidden mb-3" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                <div
-                    className="h-full rounded-full transition-all duration-700"
-                    style={{
-                        width: `${Math.min(progress, 100)}%`,
-                        background: isCompleted
-                            ? 'linear-gradient(90deg,#34d399,#06b6d4)'
-                            : 'linear-gradient(90deg,#F9A24D,#ff6b35)',
-                        boxShadow: `0 0 8px ${accentColor}40`,
-                    }}
-                />
-            </div>
 
             {isCompleted ? (
                 <div className="flex items-center justify-between">
