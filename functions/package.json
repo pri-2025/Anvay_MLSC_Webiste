@@ -1,0 +1,18 @@
+{
+    "name": "functions",
+    "description": "BlockCity Firebase Functions — wraps the Express backend",
+    "scripts": {
+        "serve": "firebase emulators:start --only functions",
+        "deploy": "firebase deploy --only functions",
+        "lint": "echo 'No linting configured'"
+    },
+    "engines": {
+        "node": "20"
+    },
+    "main": "index.js",
+    "dependencies": {
+        "firebase-functions": "^4.9.0",
+        "dotenv": "^16.6.1"
+    },
+    "private": true
+}

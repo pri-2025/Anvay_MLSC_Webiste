@@ -47,10 +47,14 @@ app.use(notFound);
 app.use(errorHandler);
 
 // -------------------
-// Start Server
+// Start Server (local dev only)
 // -------------------
-const PORT = process.env.PORT || 5000;
+if (require.main === module) {
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+        console.log(`🚀 Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+    });
+}
 
-app.listen(PORT, () => {
-    console.log(`🚀 Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-});
+// Export for Firebase Functions
+module.exports = app;
