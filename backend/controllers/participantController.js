@@ -11,6 +11,41 @@ const calcTotal = (data) =>
     Number(data.bonusScore || 0) +
     Number(data.finalProjectScore || 0);
 
+// Explorer: 0–24, Builder: 25–49, Architect: 50+ (max 75pts)
+const calculateTier = (totalScore) => {
+    if (totalScore >= 50) return 'Architect';
+    if (totalScore >= 25) return 'Builder';
+    return 'Explorer';
+};
+
+// Maps backend Firestore data → frontend room objects
+// All rooms always accessible — no sequential lock
+const mapRoomsForFrontend = (data) => {
+    const roomDefs = [
+        { id: 'room1', name: 'Law Foundry', description: 'Learn about smart contracts and Solidity basics' },
+        { id: 'room2', name: 'Treasury Mint', description: 'Master ERC-20 tokens and DeFi fundamentals' },
+        { id: 'room3', name: 'Identity Bureau', description: 'Explore NFTs and decentralized identity' },
+        { id: 'room4', name: 'Council Chamber', description: 'Understand DAO governance and on-chain voting' },
+        { id: 'room5', name: 'Control Center', description: 'Build Web3 frontend applications with Ethers.js' },
+    ];
+
+    return roomDefs.map(def => {
+        const earnedPoints = Number(data[def.id] || 0);
+        const completed = earnedPoints > 0;
+
+        return {
+            name: def.name,
+            description: def.description,
+            completed,
+            inProgress: !completed,
+            score: earnedPoints,  // actual pts earned (10 base + up to 5 bonus)
+            points: 10,            // base pts per room
+            maxProgress: 10,
+            earnedPoints,
+        };
+    });
+};
+
 // @desc    Get all participants sorted by totalScore
 // @route   GET /api/participants
 const getParticipants = async (req, res, next) => {
@@ -19,56 +54,12 @@ const getParticipants = async (req, res, next) => {
         const participants = snapshot.docs.map((doc, index) => ({
             rank: index + 1,
             id: doc.id,
-            ...doc.data()
+            ...doc.data(),
         }));
         res.json(participants);
     } catch (error) {
         next(error);
     }
-};
-
-// Helper to map backend scores to frontend room objects
-const mapRoomsForFrontend = (data) => {
-    const roomDefs = [
-        { id: 'room1', name: 'Law Foundry', description: 'Learn about smart contracts and blockchain law', maxProgress: 100, points: 100, tier: 'Architect' },
-        { id: 'room2', name: 'Treasury Mint', description: 'Master DeFi and tokenomics', maxProgress: 100, points: 100, tier: 'Builder' },
-        { id: 'room3', name: 'Identity Bureau', description: 'Explore decentralized identity solutions', maxProgress: 100, points: 100, tier: 'Architect' },
-        { id: 'room4', name: 'Council Chamber', description: 'Understand DAO governance', maxProgress: 100, points: 100, tier: 'Builder' },
-        { id: 'room5', name: 'Control Center', description: 'Build Web3 applications', maxProgress: 100, points: 100, tier: null }
-    ];
-
-    let foundInProgress = false;
-
-    return roomDefs.map(def => {
-        const earnedPoints = Number(data[def.id] || 0);
-        const completed = earnedPoints > 0;
-        let inProgress = false;
-
-        // Make the very first uncompleted room "inProgress"
-        if (!completed && !foundInProgress) {
-            inProgress = true;
-            foundInProgress = true;
-        }
-
-        return {
-            name: def.name,
-            description: def.description,
-            completed,
-            inProgress,
-            progress: completed ? def.maxProgress : (inProgress ? 0 : 0),
-            points: def.points,
-            maxProgress: def.maxProgress,
-            tier: def.tier,
-            earnedPoints
-        };
-    });
-};
-
-// Helper to determine tier
-const calculateTier = (totalScore) => {
-    if (totalScore >= 300) return 'Architect';
-    if (totalScore >= 150) return 'Builder';
-    return 'Explorer';
 };
 
 // @desc    Get participant by UCE
@@ -85,10 +76,8 @@ const getParticipantByUce = async (req, res, next) => {
         const totalScore = calcTotal(rawData);
         const currentTier = calculateTier(totalScore);
 
-        // Optional logic: assign badges based on score or specific rooms
-        const badges = [];
-        if (totalScore >= 100) badges.push({ name: 'Quick Learner', icon: 'zap' });
-        if (rawData.room1 && rawData.room2) badges.push({ name: 'Team Player', icon: 'handshake' });
+        // currentRoom = first incomplete room, or 'All Complete'
+        const currentRoom = rooms.find(r => !r.completed)?.name || 'All Complete';
 
         res.json({
             id: doc.id,
@@ -96,17 +85,13 @@ const getParticipantByUce = async (req, res, next) => {
             ...rawData,
             totalScore,
             currentTier,
-            currentRoom: rooms.find(r => r.inProgress)?.name || 'None',
+            currentRoom,
             rooms,
-            badges
         });
     } catch (error) {
         next(error);
     }
 };
-
-
-
 
 // @desc    Mentor updates bonus score
 // @route   PUT /api/participants/:uce/bonus
@@ -150,12 +135,12 @@ const updateFinalProjectScore = async (req, res, next) => {
     }
 };
 
-// @desc    Participant completes a room — increment room score by 10
+// @desc    Participant completes a room — sets room score to 10 pts
 // @route   PUT /api/participants/:uce/complete-room
 const completeRoom = async (req, res, next) => {
     try {
         const uce = req.params.uce.toUpperCase();
-        const { roomId } = req.body; // e.g. 'room1', 'room2', ...
+        const { roomId } = req.body;
 
         if (!roomId || !['room1', 'room2', 'room3', 'room4', 'room5'].includes(roomId)) {
             return res.status(400).json({ message: 'Invalid roomId' });
@@ -167,17 +152,15 @@ const completeRoom = async (req, res, next) => {
 
         const rawData = doc.data();
 
-        // Prevent double-completion: only add if room score is currently 0
         if (Number(rawData[roomId] || 0) > 0) {
             return res.status(400).json({ message: 'Room already completed' });
         }
 
-        const updatedRoomScore = 10;
-        const updated = { ...rawData, [roomId]: updatedRoomScore };
+        const updated = { ...rawData, [roomId]: 10 };
         const totalScore = calcTotal(updated);
 
-        await docRef.update({ [roomId]: updatedRoomScore, totalScore });
-        res.json({ message: 'Room completed', uce, roomId, roomScore: updatedRoomScore, totalScore });
+        await docRef.update({ [roomId]: 10, totalScore });
+        res.json({ message: 'Room completed', uce, roomId, roomScore: 10, totalScore });
     } catch (error) {
         next(error);
     }
@@ -188,5 +171,5 @@ module.exports = {
     getParticipantByUce,
     updateBonusScore,
     updateFinalProjectScore,
-    completeRoom
+    completeRoom,
 };
