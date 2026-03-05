@@ -66,8 +66,8 @@ const mapRoomsForFrontend = (data) => {
 
 // Helper to determine tier
 const calculateTier = (totalScore) => {
-    if (totalScore >= 300) return 'Architect';
-    if (totalScore >= 150) return 'Builder';
+    if (totalScore >= 120) return 'Architect';
+    if (totalScore >= 60) return 'Builder';
     return 'Explorer';
 };
 
