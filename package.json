@@ -9,10 +9,18 @@
     "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
     "build": "cd frontend && npm run build"
   },
-  "keywords": ["mlsc", "blockcity", "anvaya", "mern"],
+  "keywords": [
+    "mlsc",
+    "blockcity",
+    "anvaya",
+    "mern"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "firebase": "^12.10.0"
   }
 }

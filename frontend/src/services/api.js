@@ -1,45 +1,85 @@
-import axios from 'axios';
+import { db } from "../firebase";
+import {
+    collection,
+    doc,
+    getDocs,
+    getDoc,
+    addDoc,
+    deleteDoc,
+    updateDoc,
+    query,
+    where
+} from "firebase/firestore";
 
-const API = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || '/api',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
+/* ---------------- PARTICIPANTS ---------------- */
 
-export const getParticipants = () => API.get('/participants').then(res => res.data);
-export const getParticipantByUce = (uce) => API.get(`/participants/${uce}`).then(res => res.data);
+export const getParticipants = async () => {
+    const snapshot = await getDocs(collection(db, "participants"));
+    return snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
+};
 
-// Submissions / Room Completion API
-export const createSubmission = (data) => API.post('/submissions', data).then(res => res.data);
-export const getSubmissionsByRoom = (roomId) => API.get(`/submissions/room/${roomId}`).then(res => res.data);
-export const updateSubmissionStatus = (id, data) => API.put(`/submissions/${id}/status`, data).then(res => res.data);
-export const deleteSubmission = (id) => API.delete(`/submissions/${id}`).then(res => res.data);
-export const removeExtraPoints = (id, index) => API.delete(`/submissions/${id}/extra/${index}`).then(res => res.data);
+export const getParticipantByUce = async (uce) => {
+    const q = query(collection(db, "participants"), where("uce", "==", uce));
+    const snapshot = await getDocs(q);
 
+    if (snapshot.empty) return null;
 
-// Request interceptor — attach auth token
-API.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => Promise.reject(error)
-);
+    return {
+        id: snapshot.docs[0].id,
+        ...snapshot.docs[0].data()
+    };
+};
 
-// Response interceptor — handle errors globally
-API.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response?.status === 401) {
-            localStorage.removeItem('token');
-            window.location.href = '/';
-        }
-        return Promise.reject(error);
-    }
-);
+/* ---------------- SUBMISSIONS ---------------- */
 
-export default API;
+export const createSubmission = async (data) => {
+    const docRef = await addDoc(collection(db, "submissions"), data);
+
+    return {
+        id: docRef.id,
+        ...data
+    };
+};
+
+export const getSubmissionsByRoom = async (roomId) => {
+    const q = query(collection(db, "submissions"), where("roomId", "==", roomId));
+    const snapshot = await getDocs(q);
+
+    return snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
+};
+
+export const updateSubmissionStatus = async (id, data) => {
+    const ref = doc(db, "submissions", id);
+
+    await updateDoc(ref, data);
+
+    return { success: true };
+};
+
+export const deleteSubmission = async (id) => {
+    await deleteDoc(doc(db, "submissions", id));
+
+    return { success: true };
+};
+
+export const removeExtraPoints = async (id, index) => {
+    const ref = doc(db, "submissions", id);
+
+    const submission = await getDoc(ref);
+    const data = submission.data();
+
+    const updatedExtra = [...(data.extraPoints || [])];
+    updatedExtra.splice(index, 1);
+
+    await updateDoc(ref, {
+        extraPoints: updatedExtra
+    });
+
+    return { success: true };
+};
