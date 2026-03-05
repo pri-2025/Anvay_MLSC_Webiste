@@ -1,95 +1,174 @@
 import React from 'react';
-import { Github, Instagram, Linkedin, MapPin, Trophy, IdCard, Shield } from 'lucide-react';
+import { Github, Instagram, Linkedin, Twitter, MapPin, Trophy, Shield, Mail, Phone, ExternalLink } from 'lucide-react';
 
 const Footer = () => {
     return (
         <footer className="bg-primary border-t border-gray-800">
-            <div className="max-w-6xl mx-auto px-4 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                    {/* About Us */}
-                    <div>
-                        <h3 className="text-lg font-heading font-bold text-white mb-4">About Us</h3>
-                        <p className="text-gray-400 text-sm leading-relaxed mb-4">
-                            <strong className="text-white">MLSC (Microsoft Learn Student Chapter)</strong> is a
-                            community of tech enthusiasts driving innovation through hands-on events, workshops,
-                            and collaborative projects.
+            <div className="max-w-6xl mx-auto px-4 py-14">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+
+                    {/* ── Col 1: MLSC Identity ─────────────────────────── */}
+                    <div className="md:col-span-1">
+                        <div
+                            className="w-14 h-14 rounded-xl flex items-center justify-center mb-4"
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(249,162,77,0.15), rgba(255,107,53,0.08))',
+                                border: '1.5px solid rgba(249,162,77,0.35)',
+                            }}
+                        >
+                            <span className="text-2xl">🏛️</span>
+                        </div>
+                        <h3 className="text-base font-heading font-bold text-white mb-1">
+                            Microsoft Learn Student Club
+                        </h3>
+                        <p
+                            className="text-[11px] font-bold tracking-widest uppercase mb-3"
+                            style={{ color: '#F9A24D' }}
+                        >
+                            MLSC CCEW — Cummins College
                         </p>
                         <p className="text-gray-400 text-sm leading-relaxed">
-                            <strong className="text-white">Anvaya: The BlockCity Edition</strong> is a gamified
-                            event where participants navigate through themed rooms, solve challenges, and compete
-                            on the leaderboard.
+                            Empowering students through technology, innovation, and collaboration.
+                            Building future-ready tech leaders.
                         </p>
                     </div>
 
-                    {/* Quick Links */}
+                    {/* ── Col 2: About ─────────────────────────────────── */}
                     <div>
-                        <h3 className="text-lg font-heading font-bold text-white mb-4">Quick Links</h3>
-                        <ul className="space-y-3">
-                            <li>
-                                <a href="/#city-map" className="text-gray-400 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all flex items-center gap-2 text-sm">
-                                    <MapPin size={14} /> City Map
+                        <h3 className="text-sm font-heading font-bold text-white mb-4 uppercase tracking-widest">
+                            About
+                        </h3>
+                        <div className="space-y-4">
+                            <div>
+                                <p className="text-xs font-bold text-white mb-1">Who We Are</p>
+                                <p className="text-gray-400 text-xs leading-relaxed">
+                                    Microsoft Learn Student Club (MLSC) is a student-led technical community
+                                    focused on learning, collaboration, and innovation. We bring together
+                                    passionate students to explore modern technologies and real-world problem solving.
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-xs font-bold text-white mb-1">Our Vision</p>
+                                <p className="text-gray-400 text-xs leading-relaxed">
+                                    To build a strong student tech ecosystem that nurtures innovation, teamwork,
+                                    and industry-ready skills using Microsoft technologies.
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-xs font-bold mb-1" style={{ color: '#F9A24D' }}>
+                                    Anvaya: The BlockCity Edition
+                                </p>
+                                <p className="text-gray-400 text-xs leading-relaxed">
+                                    A gamified Web3 event where participants navigate themed rooms,
+                                    solve blockchain challenges, and compete on the leaderboard.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ── Col 3: Quick Links + Contact ─────────────────── */}
+                    <div>
+                        <h3 className="text-sm font-heading font-bold text-white mb-4 uppercase tracking-widest">
+                            Quick Links
+                        </h3>
+                        <ul className="space-y-2.5 mb-6">
+                            {[
+                                { label: 'City Map', href: '/#city-map', },
+                                { label: 'Leaderboard', href: '/#leaderboard' },
+                                { label: 'About Us', href: '/#about' },
+                                { label: 'Admin Access', href: '/admin' },
+                            ].map(({ label, href, icon }) => (
+                                <li key={label}>
+                                    <a
+                                        href={href}
+                                        className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm group"
+                                    >
+                                        {icon && <span className="opacity-60 group-hover:opacity-100">{icon}</span>}
+                                        {label}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+
+                        <h3 className="text-sm font-heading font-bold text-white mb-3 uppercase tracking-widest">
+                            Contact
+                        </h3>
+                        <ul className="space-y-2.5">
+                            <li className="flex items-start gap-2">
+                                <Mail size={13} className="text-gray-500 mt-0.5 flex-shrink-0" />
+                                <a
+                                    href="mailto:mlsc.ccew@cumminscollege.in"
+                                    className="text-gray-400 hover:text-white transition-colors text-xs"
+                                >
+                                    mlsc.ccew@cumminscollege.in
                                 </a>
                             </li>
-                            <li>
-                                <a href="/#leaderboard" className="text-gray-400 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all flex items-center gap-2 text-sm">
-                                    <Trophy size={14} /> Leaderboard
-                                </a>
+                            <li className="flex items-start gap-2">
+                                <Phone size={13} className="text-gray-500 mt-0.5 flex-shrink-0" />
+                                <div className="text-gray-400 text-xs leading-relaxed">
+                                    <p>Aarya Kulkarni: +91 8010678775</p>
+                                    <p>Vaishnavi Ahire: +91 8530017432</p>
+                                </div>
                             </li>
-                            <li>
-                                <a href="/#badge-lookup" className="text-gray-400 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all flex items-center gap-2 text-sm">
-                                    About Us
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/admin" className="text-gray-400 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all flex items-center gap-2 text-sm">
-                                    <Shield size={14} /> Admin Access
-                                </a>
+                            <li className="flex items-start gap-2">
+                                <MapPin size={13} className="text-gray-500 mt-0.5 flex-shrink-0" />
+                                <p className="text-gray-400 text-xs leading-relaxed">
+                                    MKSSS's Cummins College of Engineering,<br />
+                                    Pune, Maharashtra 411052, IN
+                                </p>
                             </li>
                         </ul>
                     </div>
 
-                    {/* Connect */}
+                    {/* ── Col 4: Follow Us ─────────────────────────────── */}
                     <div>
-                        <h3 className="text-lg font-heading font-bold text-white mb-4">Connect</h3>
-                        <p className="text-gray-400 text-sm mb-4">
-                            Follow us for updates and event highlights.
+                        <h3 className="text-sm font-heading font-bold text-white mb-4 uppercase tracking-widest">
+                            Follow Us
+                        </h3>
+                        <p className="text-gray-400 text-xs mb-5 leading-relaxed">
+                            Stay updated with MLSC events, workshops, and highlights.
                         </p>
-                        <div className="flex gap-3">
-                            <a
-                                href="https://github.com/pri-2025"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-10 h-10 rounded-lg bg-secondary border border-gray-700 flex items-center justify-center text-gray-400 hover:text-white hover:border-gray-500 transition-colors"
-                            >
-                                <Github size={18} />
-                            </a>
-                            <a
-                                href="#"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-10 h-10 rounded-lg bg-secondary border border-gray-700 flex items-center justify-center text-gray-400 hover:text-pink-400 hover:border-pink-400/30 transition-colors"
-                            >
-                                <Instagram size={18} />
-                            </a>
-                            <a
-                                href="#"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-10 h-10 rounded-lg bg-secondary border border-gray-700 flex items-center justify-center text-gray-400 hover:text-blue-400 hover:border-blue-400/30 transition-colors"
-                            >
-                                <Linkedin size={18} />
-                            </a>
+                        <div className="grid grid-cols-2 gap-2">
+                            {[
+                                { icon: <Linkedin size={15} />, label: 'LinkedIn', href: '#', hover: 'hover:text-blue-400 hover:border-blue-400/30' },
+                                { icon: <Github size={15} />, label: 'GitHub', href: '#', hover: 'hover:text-white hover:border-gray-500' },
+                                { icon: <Twitter size={15} />, label: 'Twitter', href: '#', hover: 'hover:text-sky-400 hover:border-sky-400/30' },
+                                { icon: <Instagram size={15} />, label: 'Instagram', href: '#', hover: 'hover:text-pink-400 hover:border-pink-400/30' },
+                            ].map(({ icon, label, href, hover }) => (
+                                <a
+                                    key={label}
+                                    href={href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-700 text-gray-400 text-xs transition-all ${hover}`}
+                                    style={{ background: 'rgba(255,255,255,0.03)' }}
+                                >
+                                    {icon} {label}
+                                </a>
+                            ))}
                         </div>
+
+                        <a
+                            href="https://mlsc-ccew.vercel.app"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-4 flex items-center gap-2 text-xs transition-opacity hover:opacity-75"
+                            style={{ color: '#F9A24D' }}
+                        >
+                            <ExternalLink size={12} />
+                            Visit MLSC Website
+                        </a>
                     </div>
+
                 </div>
 
-                {/* Divider + Copyright */}
+                {/* ── Divider + Copyright ───────────────────────────────── */}
                 <div className="border-t border-gray-800 mt-10 pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
                     <p className="text-gray-500 text-sm">
-                        &copy; {new Date().getFullYear()} MLSC — Anvaya: The BlockCity Edition. All rights reserved.
+                        &copy; {new Date().getFullYear()} MLSC CCEW — Anvaya: The BlockCity Edition. All rights reserved.
                     </p>
                     <p className="text-gray-600 text-xs">
-                        Built with passion by MLSC
+                        Made with ♥ by MLSC Team
                     </p>
                 </div>
             </div>

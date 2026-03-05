@@ -57,7 +57,7 @@ const Navbar = () => {
                 {/* Logo */}
                 <Link to="/" className="flex flex-col group">
                     <span className="text-xl font-heading font-bold text-white group-hover:text-highlight transition-colors leading-tight">
-                        Anvaya
+                        Anvay
                     </span>
                     <span className="text-[10px] text-gray-400 font-heading tracking-wider uppercase group-hover:text-gray-300 transition-colors">
                         Presented by MLSC

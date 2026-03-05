@@ -96,7 +96,7 @@ const HeroSection = () => {
                         filter: 'drop-shadow(0 4px 20px rgba(249,162,77,0.3))',
                     }}
                 >
-                    ANVAYA
+                    ANVAY
                 </h1>
 
                 <h2
