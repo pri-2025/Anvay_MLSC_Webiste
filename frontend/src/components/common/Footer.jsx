@@ -16,7 +16,7 @@ const Footer = () => {
                                 border: '1.5px solid rgba(249,162,77,0.35)',
                             }}
                         >
-                            <span className="text-2xl">🏛️</span>
+                            <span className="text-2xl"><img src="./mlsc_logo.png" alt="MLSC Logo" /></span>
                         </div>
                         <h3 className="text-base font-heading font-bold text-white mb-1">
                             Microsoft Learn Student Club
@@ -106,8 +106,9 @@ const Footer = () => {
                             <li className="flex items-start gap-2">
                                 <Phone size={13} className="text-gray-500 mt-0.5 flex-shrink-0" />
                                 <div className="text-gray-400 text-xs leading-relaxed">
-                                    <p>Aarya Kulkarni: +91 8010678775</p>
+
                                     <p>Vaishnavi Ahire: +91 8530017432</p>
+                                    <p>Aarya Kulkarni: +91 8010678775</p>
                                 </div>
                             </li>
                             <li className="flex items-start gap-2">
@@ -130,10 +131,9 @@ const Footer = () => {
                         </p>
                         <div className="grid grid-cols-2 gap-2">
                             {[
-                                { icon: <Linkedin size={15} />, label: 'LinkedIn', href: '#', hover: 'hover:text-blue-400 hover:border-blue-400/30' },
-                                { icon: <Github size={15} />, label: 'GitHub', href: '#', hover: 'hover:text-white hover:border-gray-500' },
-                                { icon: <Twitter size={15} />, label: 'Twitter', href: '#', hover: 'hover:text-sky-400 hover:border-sky-400/30' },
-                                { icon: <Instagram size={15} />, label: 'Instagram', href: '#', hover: 'hover:text-pink-400 hover:border-pink-400/30' },
+                                { icon: <Linkedin size={15} />, label: 'LinkedIn', href: 'https://www.linkedin.com/company/microsoft-learn-student-chapter-ccew/posts/?feedView=all', hover: 'hover:text-blue-400 hover:border-blue-400/30' },
+
+                                { icon: <Instagram size={15} />, label: 'Instagram', href: 'https://www.instagram.com/mlsc_ccoew?igsh=dnBwNmJ1NHlrenJs', hover: 'hover:text-pink-400 hover:border-pink-400/30' },
                             ].map(({ icon, label, href, hover }) => (
                                 <a
                                     key={label}
@@ -149,7 +149,7 @@ const Footer = () => {
                         </div>
 
                         <a
-                            href="https://mlsc-ccew.vercel.app"
+                            href="https://mlsc-website-rho.vercel.app/"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="mt-4 flex items-center gap-2 text-xs transition-opacity hover:opacity-75"
