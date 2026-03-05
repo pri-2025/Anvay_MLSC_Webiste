@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Check, X, Plus, Clock, ChevronDown, ChevronUp, FileText, Trash2 } from 'lucide-react';
 import ExtraPointsModal from './ExtraPointsModal';
-import { getSubmissionsByRoom, updateSubmissionStatus, deleteSubmission, removeExtraPoints } from '../../services/api';
+import { getSubmissionsByRoom, updateSubmissionStatus, deleteSubmission, removeExtraPoints } from '../../services/firebaseApi';
 
 
 const tierColors = {

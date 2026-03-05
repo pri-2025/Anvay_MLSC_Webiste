@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getParticipantByCitizenId } from '../services/participantService';
-import { createSubmission } from '../services/api';
+import { createSubmission } from '../services/firebaseApi';
 import { ROOMS_META } from '../data/roomsData'; // Assuming this exists or is needed for metadata
 
 
