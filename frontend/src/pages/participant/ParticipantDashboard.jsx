@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Trophy, Target, TrendingUp, MapPin, LogOut, CheckCircle, User } from 'lucide-react';
+import { Trophy, Target, TrendingUp, MapPin, LogOut, CheckCircle, User, Scale, Briefcase, Palette, Landmark, Wrench, Home } from 'lucide-react';
 import { useParticipant } from '../../context/ParticipantContext';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const TIER_ORDER = ['Explorer', 'Builder', 'Architect'];
 const TIER_COLORS = { Explorer: '#34d399', Builder: '#F9A24D', Architect: '#ef4444', '—': '#6b7280' };
 const ROLE_COLORS = { Auditor: '#06b6d4', Miner: '#f59e0b', Investor: '#10b981', Governor: '#8b5cf6', Ambassador: '#f472b6', '—': '#6b7280' };
-const ROOM_ICONS = { 'Law Foundry': '⚖️', 'Treasury Mint': '💼', 'Identity Bureau': '🎨', 'Council Chamber': '🏛️', 'Control Center': '🔧' };
+const ROOM_ICONS = { 'Law Foundry': Scale, 'Treasury Mint': Briefcase, 'Identity Bureau': Palette, 'Council Chamber': Landmark, 'Control Center': Wrench };
 
 // 5 rooms × 10 base pts + 5 rooms × 5 bonus pts = 75 pts max
 const MAX_SCORE = 75;
@@ -54,6 +54,8 @@ const RoomCard = ({ room }) => {
         if (routeId) navigate(`/participant/room/${routeId}`);
     };
 
+    const RoomIcon = ROOM_ICONS[room.name] || Landmark;
+
     return (
         <div
             className="rounded-2xl p-5 transition-all hover:scale-[1.01]"
@@ -61,7 +63,7 @@ const RoomCard = ({ room }) => {
         >
             <div className="flex items-start justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2">
-                    <span className="text-xl">{ROOM_ICONS[room.name] || '🏛️'}</span>
+                    <span className="flex items-center justify-center" style={{ color: accentColor }}><RoomIcon size={20} /></span>
                     <div>
                         <h3 className="text-base font-heading font-bold text-white">{room.name}</h3>
                         {isCompleted && roomScore !== null && (
@@ -310,7 +312,7 @@ const ParticipantDashboard = () => {
                     <h1 className="text-2xl font-heading font-bold text-white">
                         Welcome back, <span style={{ color: '#F9A24D' }}>{name || citizenId}</span>
                     </h1>
-                    {team && <p className="text-gray-500 text-sm mt-1">🏘️ {team}</p>}
+                    {team && <p className="text-gray-500 text-sm mt-1 flex items-center gap-1.5"><Home size={13} /> {team}</p>}
                 </div>
 
                 {/* ── Stat cards ─────────────────────────────────── */}

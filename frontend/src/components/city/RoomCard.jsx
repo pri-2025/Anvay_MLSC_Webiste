@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogIn } from 'lucide-react';
+import { LogIn, Circle, CheckCircle } from 'lucide-react';
 
 const RoomCard = ({ room }) => {
     const navigate = useNavigate();
@@ -11,8 +11,8 @@ const RoomCard = ({ room }) => {
     };
 
     const statusLabels = {
-        open: '🟢 Open',
-        completed: '✅ Completed',
+        open: <span className="flex items-center gap-1.5 text-green-400"><Circle size={10} className="fill-green-400" /> Open</span>,
+        completed: <span className="flex items-center gap-1.5 text-yellow-400"><CheckCircle size={12} /> Completed</span>,
     };
 
     return (

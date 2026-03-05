@@ -5,7 +5,7 @@ import { useParticipant } from '../../context/ParticipantContext';
 
 const ROOM_CONTENT = {
     room_1: {
-        persona: '⚖️ The City Judge',
+        persona: 'The City Judge',
         warmup: 'Imagine a coin-operated locker at a train station. You put money in, press a button, get your item. No cashier. No negotiation. The rules are built into the machine. Today we build that machine — in code.',
         entryPhrase: 'modifier',
         entryWhy: 'The most important safety concept in Solidity',
@@ -64,7 +64,7 @@ contract CityLaw {
 
     },
     room_2: {
-        persona: '💼 The Treasurer',
+        persona: 'The Treasurer',
         warmup: 'A casino prints its own chips. It tracks who has how many on an internal ledger. The chips only work at that casino. The contract IS the casino. The mapping IS the ledger. We are building the casino today — and printing its chips.',
         entryPhrase: 'ERC-20',
         entryWhy: 'The standard that makes all tokens interoperable across the ecosystem',
@@ -112,7 +112,7 @@ contract CityToken is ERC20, Ownable {
 
     },
     room_3: {
-        persona: '🎨 The Identity Minister',
+        persona: 'The Identity Minister',
         warmup: 'A deed to a house: unique, only one exists, proves ownership. Cash is interchangeable — all £10 notes are identical. A deed is not. If I give you the deed, you own the house. NFTs are digital deeds. We are issuing deeds to digital identities today.',
         entryPhrase: 'tokenURI',
         entryWhy: 'The function that connects an NFT to its soul (its metadata)',
@@ -169,7 +169,7 @@ contract CitizenBadge is ERC721, Ownable {
 
     },
     room_4: {
-        persona: '🏛️ The Council Speaker',
+        persona: 'The Council Speaker',
         warmup: 'A company board where every meeting is filmed, stored permanently, and publicly viewable. Every vote is on the record. No one can say they voted differently. The film cannot be edited. That is on-chain governance. We are building that board room today — run by code, not lawyers.',
         entryPhrase: 'quorum',
         entryWhy: 'The concept that prevents governance capture by small groups',
@@ -258,7 +258,7 @@ contract CityVoting {
 
     },
     room_5: {
-        persona: '🔧 The City Engineer',
+        persona: 'The City Engineer',
         warmup: 'A remote control for your TV. The remote = website. The TV = smart contract on the blockchain. The infrared signal = Ethers.js library. MetaMask = the battery. Without MetaMask, the remote does nothing. Today we build the remote — one HTML file.',
         entryPhrase: 'provider',
         entryWhy: 'The bridge between the browser and the blockchain',
@@ -278,7 +278,7 @@ contract CityVoting {
   <script src="https://cdn.jsdelivr.net/npm/ethers@6.9.0/dist/ethers.umd.min.js"></script>
 </head>
 <body>
-  <h1>🏙️ BlockCity Hub</h1>
+  <h1>BlockCity Hub</h1>
   <p>Wallet: <strong id="walletAddress">Not Connected</strong></p>
   <p>City Name: <strong id="cityName">--</strong></p>
   <button onclick="connectWallet()">Connect Wallet</button>
@@ -581,7 +581,7 @@ const RoomDetail = () => {
                             style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.08)' }}
                         >
                             <p className="text-sm font-heading font-bold text-white mb-4">
-                                {submitted ? '✅ Room Completed' : 'Request Stamp from Mentor'}
+                                {submitted ? <span className="flex items-center gap-2"><CheckCircle size={16} className="text-green-400" /> Room Completed</span> : 'Request Stamp from Mentor'}
                             </p>
 
                             {!submitted ? (

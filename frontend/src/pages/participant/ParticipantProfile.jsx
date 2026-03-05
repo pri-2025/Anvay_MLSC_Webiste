@@ -112,7 +112,7 @@ const ParticipantProfile = () => {
 
                         <div className="flex-1">
                             <h1 className="text-3xl font-heading font-bold text-white">{name || citizenId}</h1>
-                            {team && <p className="text-gray-500 text-sm mt-1 flex items-center gap-1.5"><Home size={14} /> {team}</p>}
+                            {team && <p className="text-gray-500 text-sm mt-1 flex items-center gap-1.5"><Home size={13} /> {team}</p>}
 
                             {/* Citizen ID row */}
                             <div className="flex items-center gap-3 mt-2 flex-wrap">
