@@ -10,7 +10,7 @@ const ROOMS = [
         challenge: 'Decode laws, draft contracts, find loopholes',
         status: 'open',
         color: '#ff5500ff',
-        x: 16, y: 57,
+        x: 13, y: 52,
     },
     {
         id: 'room_2',
@@ -20,7 +20,7 @@ const ROOMS = [
         challenge: 'Budget allocation, crypto puzzles, trade wars',
         status: 'open',
         color: '#83f40bff',
-        x: 33, y: 45,
+        x: 31, y: 39,
     },
     {
         id: 'room_3',
@@ -30,7 +30,7 @@ const ROOMS = [
         challenge: 'Forensics, biometrics, identity fraud detection',
         status: 'open',
         color: '#06b6d4',
-        x: 51, y: 55,
+        x: 48, y: 52,
     },
     {
         id: 'room_4',
@@ -40,7 +40,7 @@ const ROOMS = [
         challenge: 'Debates, voting systems, policy drafting',
         status: 'open',
         color: '#fbd83cff',
-        x: 68, y: 45,
+        x: 66, y: 40,
     },
     {
         id: 'room_5',
@@ -50,7 +50,7 @@ const ROOMS = [
         challenge: 'Firewalls, encryption, threat neutralization',
         status: 'open',
         color: '#34d399',
-        x: 88, y: 59,
+        x: 86, y: 55,
     },
 ];
 

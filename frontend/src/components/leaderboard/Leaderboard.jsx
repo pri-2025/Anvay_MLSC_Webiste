@@ -1,14 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, Loader } from 'lucide-react';
+import { RefreshCw, Loader, Medal } from 'lucide-react';
 import { motion } from 'framer-motion';
 import API from '../../services/api';
 
-const getTierInfo = (rank) => {
-    if (rank <= 3) return { label: 'Top 3', color: '#F9A24D', borderColor: 'rgba(249,162,77,0.3)', bgColor: 'rgba(249,162,77,0.1)' };
-    if (rank <= 10) return { label: 'Architect', color: '#ef4444', borderColor: 'rgba(239,68,68,0.3)', bgColor: 'rgba(239,68,68,0.1)' };
-    if (rank <= 25) return { label: 'Builder', color: '#eab308', borderColor: 'rgba(234,179,8,0.3)', bgColor: 'rgba(234,179,8,0.1)' };
-    return { label: 'Explorer', color: '#22c55e', borderColor: 'rgba(34,197,94,0.3)', bgColor: 'rgba(34,197,94,0.1)' };
+// Tier thresholds match the backend: Architect ≥50, Builder ≥25, Explorer otherwise
+const deriveTier = (score) => {
+    if (score >= 50) return 'Architect';
+    if (score >= 25) return 'Builder';
+    return 'Explorer';
 };
+
+// Tier colours match the rest of the app
+const TIER_STYLES = {
+    Architect: { color: '#ef4444', borderColor: 'rgba(239,68,68,0.3)', bgColor: 'rgba(239,68,68,0.1)' },
+    Builder: { color: '#F9A24D', borderColor: 'rgba(249,162,77,0.3)', bgColor: 'rgba(249,162,77,0.1)' },
+    Explorer: { color: '#34d399', borderColor: 'rgba(52,211,153,0.3)', bgColor: 'rgba(52,211,153,0.1)' },
+};
+
+const DEFAULT_TIER = { color: '#6b7280', borderColor: 'rgba(107,114,128,0.3)', bgColor: 'rgba(107,114,128,0.1)' };
+
+const getTierStyle = (tierName) => TIER_STYLES[tierName] || DEFAULT_TIER;
+
+// Medal colours for rank 1/2/3
+const MEDAL_COLORS = { 1: '#FFD700', 2: '#C0C0C0', 3: '#CD7F32' };
 
 const Leaderboard = () => {
     const [leaderboard, setLeaderboard] = useState([]);
@@ -18,8 +32,7 @@ const Leaderboard = () => {
         try {
             setLoading(true);
             const res = await API.get('/participants');
-            // Backend already sorts by totalScore desc, but just to be sure:
-            const sorted = res.data.sort((a, b) => (b.totalScore || 0) - (a.totalScore || 0));
+            const sorted = [...res.data].sort((a, b) => (b.totalScore || 0) - (a.totalScore || 0));
             setLeaderboard(sorted);
         } catch (error) {
             console.error('Error fetching leaderboard:', error);
@@ -28,9 +41,7 @@ const Leaderboard = () => {
         }
     };
 
-    useEffect(() => {
-        fetchLeaderboard();
-    }, []);
+    useEffect(() => { fetchLeaderboard(); }, []);
 
     const nonZeroLeaderboard = leaderboard.filter(p => (p.totalScore || 0) > 0);
     const displayEntries = nonZeroLeaderboard.slice(0, 25);
@@ -65,9 +76,7 @@ const Leaderboard = () => {
                             />
                         </button>
                     </div>
-                    <p className="text-gray-400">
-                        Top citizens competing for BlockCity dominance
-                    </p>
+                    <p className="text-gray-400">Top citizens competing for BlockCity dominance</p>
                 </div>
 
                 {/* Table */}
@@ -92,26 +101,35 @@ const Leaderboard = () => {
                         <div className="max-h-[500px] overflow-y-auto">
                             {!allZeroScore && displayEntries.map((entry, index) => {
                                 const rank = index + 1;
-                                const tier = getTierInfo(rank);
                                 const isTopThree = rank <= 3;
+                                const medalColor = MEDAL_COLORS[rank];
+                                // currentTier may not be stored in Firestore — derive it from score as fallback
+                                const tierName = entry.currentTier || deriveTier(entry.totalScore || 0);
+                                const tierStyle = getTierStyle(tierName);
 
                                 return (
                                     <div
-                                        key={entry._id || index}
+                                        key={entry.citizenId || entry.id || index}
                                         className="grid grid-cols-9 gap-4 items-center px-6 py-4 border-b transition-colors hover:bg-white/[0.03]"
                                         style={{
                                             borderColor: isTopThree ? 'rgba(249,162,77,0.15)' : 'rgba(255,255,255,0.03)',
                                             backgroundColor: isTopThree ? 'rgba(249,162,77,0.03)' : 'transparent',
                                         }}
                                     >
-                                        {/* Rank */}
-                                        <div className="col-span-2">
+                                        {/* Rank — medal icon for top 3 */}
+                                        <div className="col-span-2 flex items-center gap-2">
+                                            {isTopThree ? (
+                                                <Medal
+                                                    size={20}
+                                                    style={{ color: medalColor, filter: `drop-shadow(0 0 6px ${medalColor})` }}
+                                                />
+                                            ) : null}
                                             <span
                                                 className="text-lg font-bold"
                                                 style={{
                                                     fontFamily: "'Orbitron', sans-serif",
-                                                    color: isTopThree ? '#F9A24D' : '#6b7280',
-                                                    textShadow: isTopThree ? '0 0 15px rgba(249,162,77,0.3)' : 'none',
+                                                    color: isTopThree ? medalColor : '#6b7280',
+                                                    textShadow: isTopThree ? `0 0 15px ${medalColor}60` : 'none',
                                                 }}
                                             >
                                                 #{rank}
@@ -121,7 +139,7 @@ const Leaderboard = () => {
                                         {/* Name */}
                                         <div className="col-span-3">
                                             <span className={`font-semibold ${isTopThree ? 'text-white' : 'text-gray-300'}`}>
-                                                {entry.name}
+                                                {entry.name || entry.citizenId || '—'}
                                             </span>
                                         </div>
 
@@ -140,17 +158,17 @@ const Leaderboard = () => {
                                             <span className="text-gray-500 text-xs ml-1">pts</span>
                                         </div>
 
-                                        {/* Tier Badge */}
+                                        {/* Tier Badge — from DB */}
                                         <div className="col-span-2 text-right">
                                             <span
                                                 className="px-3 py-1 rounded-full text-xs font-bold border"
                                                 style={{
-                                                    color: tier.color,
-                                                    borderColor: tier.borderColor,
-                                                    backgroundColor: tier.bgColor,
+                                                    color: tierStyle.color,
+                                                    borderColor: tierStyle.borderColor,
+                                                    backgroundColor: tierStyle.bgColor,
                                                 }}
                                             >
-                                                {tier.label}
+                                                {tierName}
                                             </span>
                                         </div>
                                     </div>
@@ -175,10 +193,7 @@ const Leaderboard = () => {
                     </div>
                 ) : leaderboard.length === 0 ? (
                     <div className="text-center py-16 text-gray-500">
-                        <p className="text-lg" style={{ fontFamily: "'Orbitron', sans-serif" }}>
-                            No entries yet
-
-                        </p>
+                        <p className="text-lg" style={{ fontFamily: "'Orbitron', sans-serif" }}>No entries yet</p>
                         <p className="text-sm mt-2">The competition hasn't started!</p>
                     </div>
                 ) : null}

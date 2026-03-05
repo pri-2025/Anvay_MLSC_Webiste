@@ -19,26 +19,24 @@ const BadgeLookup = () => {
         setParticipant(null);
 
         try {
-            // HARDCODED OVERRIDE FOR PREVIEW
-            setTimeout(() => {
-                setParticipant({
-                    name: 'Alex Chen',
-                    citizenId: citizenId.trim() || 'BC-0x7A2F',
-                    tier: 'Gold',
-                    totalPoints: 8950,
-                    roomsCompleted: 4
-                });
-                setLoading(false);
-            }, 600);
-
-            // const data = await getParticipantByCitizenId(citizenId.trim());
-            // setParticipant(data);
+            const data = await getParticipantByCitizenId(citizenId.trim());
+            // Map API response fields to what BadgeCard expects
+            setParticipant({
+                name: data.name || data.citizenId,
+                citizenId: data.citizenId,
+                tier: data.currentTier || 'Explorer',
+                totalPoints: data.totalScore || 0,
+                roomsCompleted: Array.isArray(data.rooms)
+                    ? data.rooms.filter(r => r.completed).length
+                    : 0,
+            });
         } catch (err) {
-            setError('Citizen not found. Check your ID and try again.');
+            setError(err.response?.data?.message || 'Citizen not found. Check your ID and try again.');
         } finally {
             setLoading(false);
         }
     };
+
 
     return (
         <section id="badge-lookup" className="py-20 px-4 bg-transparent relative z-20 overflow-hidden">
