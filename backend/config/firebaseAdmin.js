@@ -1,48 +1,25 @@
 const admin = require("firebase-admin");
 
-let db, auth;
-
-try {
+// Prevent duplicate app initialization (Vercel reuses function instances)
+if (!admin.apps.length) {
   let credential;
 
-  if (process.env.FIREBASE_PRIVATE_KEY) {
-    // Production (Vercel) — use env vars
-    const privateKey = process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n");
-    console.log("[Firebase] Using env var credentials. Project:", process.env.FIREBASE_PROJECT_ID);
-    console.log("[Firebase] Client email:", process.env.FIREBASE_CLIENT_EMAIL);
-    console.log("[Firebase] Private key starts with:", privateKey.substring(0, 30));
-
-    credential = admin.credential.cert({
-      type: "service_account",
-      project_id: process.env.FIREBASE_PROJECT_ID,
-      private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
-      private_key: privateKey,
-      client_email: process.env.FIREBASE_CLIENT_EMAIL,
-      client_id: process.env.FIREBASE_CLIENT_ID,
-      auth_uri: "https://accounts.google.com/o/oauth2/auth",
-      token_uri: "https://oauth2.googleapis.com/token",
-    });
+  if (process.env.GOOGLE_CREDENTIALS_BASE64) {
+    // Production (Vercel) — decode base64 JSON string
+    const serviceAccount = JSON.parse(
+      Buffer.from(process.env.GOOGLE_CREDENTIALS_BASE64, "base64").toString("utf8")
+    );
+    credential = admin.credential.cert(serviceAccount);
   } else {
-    // Local dev — use the JSON file
-    console.log("[Firebase] Using serviceAccountKey.json for local dev");
+    // Local dev — use the JSON file directly
     const serviceAccount = require("./serviceAccountKey.json");
     credential = admin.credential.cert(serviceAccount);
   }
 
-  // Prevent duplicate app initialization
-  if (!admin.apps.length) {
-    admin.initializeApp({ credential });
-  }
-
-  db = admin.firestore();
-  auth = admin.auth();
-  console.log("[Firebase] Initialized successfully");
-
-} catch (err) {
-  console.error("[Firebase] INITIALIZATION FAILED:", err.message);
-  console.error(err.stack);
-  // Re-throw so Vercel logs show the full error
-  throw err;
+  admin.initializeApp({ credential });
 }
+
+const db = admin.firestore();
+const auth = admin.auth();
 
 module.exports = { admin, db, auth };
