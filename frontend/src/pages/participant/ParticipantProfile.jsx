@@ -10,6 +10,13 @@ const TIER_COLORS = {
     '—': '#6b7280',
 };
 
+// Derive tier from score — matches backend thresholds
+const deriveTier = (score) => {
+    if (score >= 50) return 'Architect';
+    if (score >= 25) return 'Builder';
+    return 'Explorer';
+};
+
 const ROLE_CONFIG = {
     Miner: { icon: Pickaxe, color: '#f59e0b', power: 'Submit any transaction first in a room', bonus: '+5 per first tx (max 3)' },
     Auditor: { icon: Search, color: '#06b6d4', power: 'Find bugs in other teams\' contracts', bonus: '+5 per verified bug found' },
@@ -66,7 +73,7 @@ const ParticipantProfile = () => {
         .filter(r => r.completed || r.inProgress)
         .map(r => ({
             name: r.name,
-            tier: r.tier || (r.completed ? 'Explorer' : '—'),
+            tier: r.tier || (r.completed ? deriveTier(totalScore) : '—'),
             pts: r.earnedPoints ?? (r.completed ? 10 : 0),
             color: r.completed ? '#34d399' : '#F9A24D',
         }));

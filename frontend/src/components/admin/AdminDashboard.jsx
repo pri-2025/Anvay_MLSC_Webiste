@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Search, Loader, Zap, Plus, Minus, LogOut, ShieldCheck, Users } from 'lucide-react';
+import { Search, Loader, Zap, Plus, Minus, LogOut, ShieldCheck, Users, Home } from 'lucide-react';
 import API from '../../services/api';
 
 const AdminDashboard = () => {
@@ -182,7 +182,7 @@ const AdminDashboard = () => {
                                 <p className="text-xl font-bold text-white">{participant.name || '—'}</p>
                                 <p className="text-sm font-mono mt-0.5" style={{ color: '#06b6d4' }}>{participant.id}</p>
                                 {participant.team && (
-                                    <p className="text-xs text-gray-500 mt-1">🏘️ {participant.team}</p>
+                                    <p className="text-xs text-gray-500 mt-1 flex items-center gap-1"><Home size={11} /> {participant.team}</p>
                                 )}
                             </div>
                             <div className="text-right flex-shrink-0">
