@@ -10,7 +10,7 @@ import ParticipantLogin from './pages/participant/ParticipantLogin';
 import ParticipantDashboard from './pages/participant/ParticipantDashboard';
 import ParticipantProfile from './pages/participant/ParticipantProfile';
 import RoomPage from './pages/participant/RoomPage';
-import FinalIntegrationRoom from './pages/participant/FinalIntegrationRoom';
+import FinalIntegrationRoom from './pages/participant/Finalintegrationroom';
 import Onboarding from './pages/participant/Onboarding';
 import Progress from './pages/participant/Progress';
 
