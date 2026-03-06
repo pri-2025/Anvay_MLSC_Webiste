@@ -68,15 +68,20 @@ const ParticipantProfile = () => {
 
 
 
-    // Points breakdown from rooms
+    // Build points breakdown with progressive tier — tier reflects cumulative score AT each room completion
+    let runningScore = 0;
     const roomPoints = rooms
         .filter(r => r.completed || r.inProgress)
-        .map(r => ({
-            name: r.name,
-            tier: r.tier || (r.completed ? deriveTier(totalScore) : '—'),
-            pts: r.earnedPoints ?? (r.completed ? 10 : 0),
-            color: r.completed ? '#34d399' : '#F9A24D',
-        }));
+        .map(r => {
+            const pts = r.earnedPoints ?? (r.completed ? 10 : 0);
+            if (r.completed) runningScore += pts;
+            return {
+                name: r.name,
+                tier: r.tier || (r.completed ? deriveTier(runningScore) : '—'),
+                pts,
+                color: r.completed ? '#34d399' : '#F9A24D',
+            };
+        });
 
     return (
         <div className="min-h-screen pb-16" style={{ background: '#0a0a1a' }}>
