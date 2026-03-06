@@ -147,7 +147,7 @@ const ScoreProgressBar = ({ totalScore, currentTier }) => {
                         {activeTier}
                     </span>
                     <span className="text-xs font-bold" style={{ color: tierColor }}>
-                        {totalScore} / {MAX_SCORE} pts
+                        {totalScore} pts
                     </span>
                 </div>
             </div>

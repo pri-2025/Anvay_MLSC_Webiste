@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { useParticipant } from '../../context/ParticipantContext';
 
-const DEMO_IDS = ['BC2025001', 'BC2025002', 'BC2025003'];
-
 const ParticipantLogin = () => {
     const navigate = useNavigate();
     const { participant, loginByCitizenId, loading, error } = useParticipant();
@@ -89,7 +87,6 @@ const ParticipantLogin = () => {
                             type="text"
                             value={citizenId}
                             onChange={e => setCitizenId(e.target.value)}
-                            placeholder="BC2025001"
                             className="w-full px-4 py-3 rounded-xl font-mono text-white placeholder-gray-600 outline-none transition-all"
                             style={{
                                 background: 'rgba(10,10,26,0.8)',
@@ -129,26 +126,7 @@ const ParticipantLogin = () => {
                     </button>
                 </form>
 
-                {/* Demo IDs */}
-                <div className="mt-6 text-center">
-                    <p className="text-xs text-gray-600 mb-2">Demo IDs:</p>
-                    <div className="flex gap-2 justify-center flex-wrap">
-                        {DEMO_IDS.map(id => (
-                            <button
-                                key={id}
-                                onClick={() => setCitizenId(id)}
-                                className="text-xs font-mono px-3 py-1 rounded-lg transition-all hover:scale-105"
-                                style={{
-                                    background: 'rgba(249,162,77,0.08)',
-                                    border: '1px solid rgba(249,162,77,0.2)',
-                                    color: '#F9A24D',
-                                }}
-                            >
-                                {id}
-                            </button>
-                        ))}
-                    </div>
-                </div>
+
             </div>
         </div>
     );

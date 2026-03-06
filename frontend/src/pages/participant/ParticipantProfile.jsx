@@ -168,7 +168,6 @@ const ParticipantProfile = () => {
                         >
                             <p className="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Total Score</p>
                             <p className="text-4xl font-heading font-bold" style={{ color: '#F9A24D' }}>{totalScore}</p>
-                            <p className="text-[9px] text-gray-600 mt-0.5">/ 140 pts max</p>
                         </div>
                     </div>
                 </div>
