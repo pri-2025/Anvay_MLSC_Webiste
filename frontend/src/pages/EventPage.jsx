@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronDown, ChevronUp } from 'lucide-react';
+import {
+    ChevronLeft, ChevronDown, ChevronUp,
+    Scale, Briefcase, Palette, Landmark, Wrench,
+    Building2, DoorOpen, Clock, Key, Lightbulb, CheckCircle,
+} from 'lucide-react';
 
 const rooms = [
     {
         id: 1,
         number: 'ROOM 01',
         name: 'The City Law Foundry',
-        persona: '⚖️ The City Judge',
+        personaIcon: Scale,
+        persona: 'The City Judge',
         tag: 'Smart Contracts',
         entryPhrase: 'modifier',
         color: '#F9A24D',
@@ -20,20 +25,21 @@ const rooms = [
             'Debug a broken contract — find & fix 2 bugs',
         ],
         extra: [
-            '🟡 Builder: Add pause()/unpause() with a pausable modifier',
-            '🔴 Architect: Multi-owner contract with addOwner()/removeOwner()',
+            { tier: 'Builder', text: 'Add pause()/unpause() with a pausable modifier' },
+            { tier: 'Architect', text: 'Multi-owner contract with addOwner()/removeOwner()' },
         ],
     },
     {
         id: 2,
         number: 'ROOM 02',
         name: 'The City Treasury Mint',
-        persona: '💼 The Treasurer',
+        personaIcon: Briefcase,
+        persona: 'The Treasurer',
         tag: 'ERC-20 Tokens',
         entryPhrase: 'ERC-20',
         color: '#ff6b35',
         description:
-            'Print the city\'s currency. Build an ERC-20 token contract, mint tokens, and transfer them on-chain — your first digital ledger.',
+            "Print the city's currency. Build an ERC-20 token contract, mint tokens, and transfer them on-chain — your first digital ledger.",
         tasks: [
             'Understand mapping(address → uint256) token balances',
             'Deploy CityToken.sol using OpenZeppelin',
@@ -41,15 +47,16 @@ const rooms = [
             'Transfer 50 tokens to a teammate — show tx hash to mentor',
         ],
         extra: [
-            '🟡 Builder: Add burn(uint256 amount) to destroy tokens',
-            '🔴 Architect: Build a staking system with time-based rewards',
+            { tier: 'Builder', text: 'Add burn(uint256 amount) to destroy tokens' },
+            { tier: 'Architect', text: 'Build a staking system with time-based rewards' },
         ],
     },
     {
         id: 3,
         number: 'ROOM 03',
         name: 'The Citizen Identity Bureau',
-        persona: '🎨 The Identity Minister',
+        personaIcon: Palette,
+        persona: 'The Identity Minister',
         tag: 'NFT Badges',
         entryPhrase: 'tokenURI',
         color: '#e8a045',
@@ -62,15 +69,16 @@ const rooms = [
             'Verify ownership via ownerOf() and metadata via tokenURI()',
         ],
         extra: [
-            '🟡 Builder: batchMintBadge() — mint to multiple addresses at once',
-            '🔴 Architect: On-chain pseudo-random rarity score per token',
+            { tier: 'Builder', text: 'batchMintBadge() — mint to multiple addresses at once' },
+            { tier: 'Architect', text: 'On-chain pseudo-random rarity score per token' },
         ],
     },
     {
         id: 4,
         number: 'ROOM 04',
         name: 'The City Council Chamber',
-        persona: '🏛 The Council Speaker',
+        personaIcon: Landmark,
+        persona: 'The Council Speaker',
         tag: 'DAO Voting',
         entryPhrase: 'quorum',
         color: '#c97b3a',
@@ -83,20 +91,21 @@ const rooms = [
             'Execute a passed proposal after deadline — verify in Remix logs',
         ],
         extra: [
-            '🟡 Builder: Add quorum requirement to execute()',
-            '🔴 Architect: Token-weighted voting using Room 2 token balances',
+            { tier: 'Builder', text: 'Add quorum requirement to execute()' },
+            { tier: 'Architect', text: 'Token-weighted voting using Room 2 token balances' },
         ],
     },
     {
         id: 5,
         number: 'ROOM 05',
         name: 'The City Control Center',
-        persona: '🔧 The City Engineer',
+        personaIcon: Wrench,
+        persona: 'The City Engineer',
         tag: 'Web3 Frontend',
         entryPhrase: 'provider',
         color: '#F9A24D',
         description:
-            'Build the city\'s interface. One HTML file connects your MetaMask wallet to the blockchain — no frameworks, no install required.',
+            "Build the city's interface. One HTML file connects your MetaMask wallet to the blockchain — no frameworks, no install required.",
         tasks: [
             'Understand window.ethereum, ethers.BrowserProvider, and ABI',
             'Connect MetaMask wallet — display address on screen',
@@ -104,14 +113,20 @@ const rooms = [
             'Submit a write transaction and confirm it on Etherscan',
         ],
         extra: [
-            '🟡 Builder: Add real-time contract.on() event listener',
-            '🔴 Architect: Full dashboard showing all 4 contract states simultaneously',
+            { tier: 'Builder', text: 'Add real-time contract.on() event listener' },
+            { tier: 'Architect', text: 'Full dashboard showing all 4 contract states simultaneously' },
         ],
     },
 ];
 
+const TIER_STYLES = {
+    Builder: { color: '#F9A24D', bg: 'rgba(249,162,77,0.1)', border: 'rgba(249,162,77,0.3)' },
+    Architect: { color: '#ef4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)' },
+};
+
 const RoomCard = ({ room }) => {
     const [open, setOpen] = useState(false);
+    const PersonaIcon = room.personaIcon;
 
     return (
         <div
@@ -142,7 +157,8 @@ const RoomCard = ({ room }) => {
                         <p className="text-white font-bold text-base md:text-lg" style={{ fontFamily: "'Rajdhani', sans-serif", letterSpacing: '0.05em' }}>
                             {room.name}
                         </p>
-                        <p className="text-xs mt-0.5" style={{ color: 'rgba(249,162,77,0.7)' }}>
+                        <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'rgba(249,162,77,0.7)' }}>
+                            <PersonaIcon size={12} />
                             {room.persona} · {room.tag}
                         </p>
                     </div>
@@ -178,7 +194,7 @@ const RoomCard = ({ room }) => {
                         className="flex items-center gap-3 px-4 py-3 rounded-xl"
                         style={{ background: 'rgba(249,162,77,0.07)', border: '1px solid rgba(249,162,77,0.2)' }}
                     >
-                        <span className="text-lg">🔑</span>
+                        <Key size={18} color="#F9A24D" className="flex-shrink-0" />
                         <div>
                             <p className="text-xs uppercase tracking-widest mb-1" style={{ color: 'rgba(249,162,77,0.6)' }}>Room Entry Phrase</p>
                             <p className="font-bold text-sm" style={{ color: '#F9A24D', fontFamily: "'Orbitron', monospace" }}>
@@ -208,11 +224,20 @@ const RoomCard = ({ room }) => {
                             Extra Tasks (Bonus Points)
                         </p>
                         <ul className="space-y-2">
-                            {room.extra.map((task, i) => (
-                                <li key={i} className="text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>
-                                    {task}
-                                </li>
-                            ))}
+                            {room.extra.map((item, i) => {
+                                const ts = TIER_STYLES[item.tier] || TIER_STYLES.Builder;
+                                return (
+                                    <li key={i} className="flex items-start gap-2 text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                                        <span
+                                            className="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 mt-0.5"
+                                            style={{ color: ts.color, background: ts.bg, border: `1px solid ${ts.border}` }}
+                                        >
+                                            {item.tier}
+                                        </span>
+                                        {item.text}
+                                    </li>
+                                );
+                            })}
                         </ul>
                     </div>
                 </div>
@@ -231,14 +256,9 @@ const EventPage = () => {
         >
             <style>{`
                 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
-
                 @keyframes slideUp {
                     from { opacity: 0; transform: translateY(30px); }
                     to { opacity: 1; transform: translateY(0); }
-                }
-                @keyframes fadeIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
                 }
                 .event-animate { animation: slideUp 0.7s ease-out both; }
                 .divider-line {
@@ -299,16 +319,18 @@ const EventPage = () => {
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {[
-                            { icon: '🏙', label: 'Format', value: 'Gamified Web3 Workshop' },
-                            { icon: '🚪', label: 'Rooms', value: '5 Independent Rooms' },
-                            { icon: '⏱️', label: 'Duration', value: '7.5 – 11 hours total' },
+                            { Icon: Building2, label: 'Format', value: 'Gamified Web3 Workshop' },
+                            { Icon: DoorOpen, label: 'Rooms', value: '5 Independent Rooms' },
+                            { Icon: Clock, label: 'Duration', value: '7.5 – 11 hours total' },
                         ].map((item) => (
                             <div
                                 key={item.label}
                                 className="px-5 py-4 rounded-2xl text-center"
                                 style={{ background: 'rgba(249,162,77,0.06)', border: '1px solid rgba(249,162,77,0.15)' }}
                             >
-                                <div className="text-2xl mb-2">{item.icon}</div>
+                                <div className="flex justify-center mb-2">
+                                    <item.Icon size={24} color="#F9A24D" />
+                                </div>
                                 <p className="text-xs uppercase tracking-widest mb-1" style={{ color: 'rgba(249,162,77,0.6)' }}>{item.label}</p>
                                 <p className="font-bold text-sm text-white">{item.value}</p>
                             </div>
@@ -325,41 +347,13 @@ const EventPage = () => {
                     </h2>
                     <div className="space-y-4">
                         {[
-                            {
-                                step: '01',
-                                title: 'Log in with your University Number',
-                                desc: 'Access the participant dashboard using your UN number. Your profile, room progress, and score are all tied to it.',
-                            },
-                            {
-                                step: '02',
-                                title: 'Say the Entry Phrase',
-                                desc: 'Each room has a secret Web3 keyword. Say it to the room\'s persona mentor to enter. The phrase is revealed when you click on each room below.',
-                            },
-                            {
-                                step: '03',
-                                title: 'Complete the Room Tasks',
-                                desc: 'Build, deploy, and demonstrate your work. Each room has core tasks and optional extra tasks for bonus points.',
-                            },
-                            {
-                                step: '04',
-                                title: 'Get Admin Approval & Enter Secret Code',
-                                desc: 'Once your work is verified by the room admin, they provide a secret code. Go to your dashboard, select the room, click "Mark as Complete", and enter the code.',
-                            },
-                            {
-                                step: '05',
-                                title: 'Score Updates Automatically',
-                                desc: 'Your score is updated instantly on the leaderboard. Bonus points awarded by the admin for extra tasks will also appear in your account.',
-                            },
-                            {
-                                step: '06',
-                                title: 'Complete All 5 Rooms',
-                                desc: 'After finishing all 5 rooms, head to the Final Integration Session — build a unified BlockCity Hub dApp using all your code snippets.',
-                            },
-                            {
-                                step: '07',
-                                title: 'Tiebreaker Round',
-                                desc: 'If scores are tied at the end, a special Tiebreaker Round determines the final ranking. Stay ready!',
-                            },
+                            { step: '01', title: 'Log in with your University Number', desc: 'Access the participant dashboard using your UN number. Your profile, room progress, and score are all tied to it.' },
+                            { step: '02', title: 'Say the Entry Phrase', desc: "Each room has a secret Web3 keyword. Say it to the room's persona mentor to enter. The phrase is revealed when you click on each room below." },
+                            { step: '03', title: 'Complete the Room Tasks', desc: 'Build, deploy, and demonstrate your work. Each room has core tasks and optional extra tasks for bonus points.' },
+                            { step: '04', title: 'Get Admin Approval & Enter Secret Code', desc: 'Once your work is verified by the room admin, they provide a secret code. Go to your dashboard, select the room, click "Mark as Complete", and enter the code.' },
+                            { step: '05', title: 'Score Updates Automatically', desc: 'Your score is updated instantly on the leaderboard. Bonus points awarded by the admin for extra tasks will also appear in your account.' },
+                            { step: '06', title: 'Complete All 5 Rooms', desc: 'After finishing all 5 rooms, head to the Final Integration Session — build a unified BlockCity Hub dApp using all your code snippets.' },
+                            { step: '07', title: 'Tiebreaker Round', desc: 'If scores are tied at the end, a special Tiebreaker Round determines the final ranking. Stay ready!' },
                         ].map((item, i) => (
                             <div
                                 key={i}
@@ -388,7 +382,6 @@ const EventPage = () => {
                     <h2 className="text-xs font-bold tracking-[0.4em] uppercase mb-8" style={{ color: 'rgba(249,162,77,0.6)' }}>
                         Scoring System
                     </h2>
-
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                         {[
                             { label: 'Room Completion (× 5 rooms)', pts: '10 pts each', sub: '50 pts max', highlight: true },
@@ -423,9 +416,11 @@ const EventPage = () => {
                         className="px-5 py-4 rounded-2xl flex items-start gap-3"
                         style={{ background: 'rgba(249,162,77,0.05)', border: '1px solid rgba(249,162,77,0.2)' }}
                     >
-                        <span className="text-lg flex-shrink-0">💡</span>
+                        <Lightbulb size={18} color="#F9A24D" className="flex-shrink-0 mt-0.5" />
                         <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                            Bonus points are awarded at the admin's discretion for completing Builder (🟡) or Architect (🔴) extra tasks in any room.
+                            Bonus points are awarded at the admin's discretion for completing{' '}
+                            <span style={{ color: '#F9A24D', fontWeight: 'bold' }}>Builder</span> or{' '}
+                            <span style={{ color: '#ef4444', fontWeight: 'bold' }}>Architect</span> extra tasks in any room.
                             These are reflected in your score automatically once the admin grants them.
                         </p>
                     </div>
@@ -474,8 +469,9 @@ const EventPage = () => {
                             </div>
                         ))}
                     </div>
-                    <p className="text-xs mt-4" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                        ✅ Zero setup required — everything runs in the browser. You only need: Chrome + MetaMask + internet.
+                    <p className="text-xs mt-4 flex items-center gap-2" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                        <CheckCircle size={13} color="#34d399" />
+                        Zero setup required — everything runs in the browser. You only need: Chrome + MetaMask + internet.
                     </p>
                 </section>
 
