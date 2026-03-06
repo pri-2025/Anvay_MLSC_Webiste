@@ -215,59 +215,89 @@ const CompleteModal = ({ room, citizenId, onClose, onSuccess }) => {
                     /* ── Success state ── */
                     <>
                         {/* Animated success ring */}
-                        <div className="relative w-20 h-20 mx-auto mb-5">
+                        <div className="relative w-24 h-24 mx-auto mb-6">
                             <div className="absolute inset-0 rounded-full animate-ping opacity-20"
                                 style={{ background: room.color }} />
-                            <div className="w-20 h-20 rounded-full flex items-center justify-center"
-                                style={{ background: `${room.color}20`, border: `2px solid ${room.color}`, boxShadow: `0 0 30px ${room.color}50` }}>
-                                <CheckCircle size={36} style={{ color: room.color }} />
+                            <div className="w-24 h-24 rounded-full flex items-center justify-center"
+                                style={{ background: `${room.color}20`, border: `2px solid ${room.color}`, boxShadow: `0 0 40px ${room.color}60` }}>
+                                <CheckCircle size={44} style={{ color: room.color }} />
                             </div>
                         </div>
 
-                        <h2 className="text-xl font-bold text-white text-center mb-1"
-                            style={{ fontFamily: "'Orbitron', sans-serif" }}>
+                        {/* Main heading */}
+                        <h2 className="text-center mb-1 font-black uppercase tracking-widest"
+                            style={{
+                                fontFamily: "'Orbitron', sans-serif",
+                                fontSize: '22px',
+                                color: '#fff',
+                                textShadow: `0 0 30px ${room.color}60`,
+                                letterSpacing: '0.12em',
+                            }}>
                             Room Complete!
                         </h2>
-                        <div className="flex items-center justify-center gap-2 mb-5">
-                            <Star size={12} style={{ color: '#F9A24D' }} />
-                            <p className="text-gray-400 text-sm text-center"
-                                style={{ fontFamily: "'Rajdhani', sans-serif" }}>
-                                +10 pts added · Admin may award up to +5 bonus pts
+
+                        {/* Points line */}
+                        <div className="flex items-center justify-center gap-2 mb-1">
+                            <Star size={13} style={{ color: '#F9A24D' }} />
+                            <p className="font-bold text-center"
+                                style={{
+                                    fontFamily: "'Rajdhani', sans-serif",
+                                    fontSize: '17px',
+                                    color: '#F9A24D',
+                                    letterSpacing: '0.04em',
+                                }}>
+                                +10 pts added
                             </p>
-                            <Star size={12} style={{ color: '#F9A24D' }} />
+                            <Star size={13} style={{ color: '#F9A24D' }} />
                         </div>
+                        <p className="text-center mb-6"
+                            style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: '13px', color: '#6b7280', letterSpacing: '0.03em' }}>
+                            Admin may award up to +5 bonus pts
+                        </p>
 
                         {/* Reward snippet */}
                         <div className="mb-5">
                             <div className="flex items-center gap-2 justify-center mb-3">
-                                <Gift size={14} style={{ color: room.color }} />
-                                <p className="text-[10px] uppercase tracking-widest font-bold"
-                                    style={{ color: room.color, fontFamily: "'Orbitron', sans-serif" }}>
+                                <Gift size={15} style={{ color: room.color }} />
+                                <p className="uppercase tracking-widest font-black"
+                                    style={{
+                                        color: room.color,
+                                        fontFamily: "'Orbitron', sans-serif",
+                                        fontSize: '11px',
+                                        letterSpacing: '0.2em',
+                                    }}>
                                     Your Reward Code Snippet
                                 </p>
                             </div>
                             <a href={room.rewardLink} target="_blank" rel="noreferrer"
-                                className="flex items-center justify-between px-4 py-3 rounded-xl transition-all hover:scale-[1.01]"
-                                style={{ background: `${room.color}12`, border: `1px solid ${room.color}40` }}>
-                                <div className="flex items-center gap-2">
-                                    <Trophy size={15} style={{ color: room.color }} />
-                                    <span className="text-sm font-semibold text-white"
-                                        style={{ fontFamily: "'Rajdhani', sans-serif" }}>
+                                className="flex items-center justify-between px-4 py-3.5 rounded-xl transition-all hover:scale-[1.01]"
+                                style={{ background: `${room.color}15`, border: `1px solid ${room.color}50`, boxShadow: `0 0 20px ${room.color}15` }}>
+                                <div className="flex items-center gap-2.5">
+                                    <Trophy size={17} style={{ color: room.color }} />
+                                    <span className="font-bold text-white"
+                                        style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: '16px', letterSpacing: '0.04em' }}>
                                         Open Reward Snippet
                                     </span>
                                 </div>
-                                <ArrowRight size={13} style={{ color: room.color }} />
+                                <ArrowRight size={15} style={{ color: room.color }} />
                             </a>
-                            <p className="text-[10px] text-gray-600 text-center mt-2"
-                                style={{ fontFamily: "'Rajdhani', sans-serif" }}>
+                            <p className="text-center mt-2"
+                                style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: '11px', color: '#4b5563' }}>
                                 Also accessible anytime from this room page
                             </p>
                         </div>
 
                         <button onClick={onSuccess}
-                            className="w-full py-3 rounded-xl font-bold text-sm uppercase tracking-widest flex items-center justify-center gap-2"
-                            style={{ background: `linear-gradient(135deg, ${room.color}, ${room.color}99)`, color: '#0a0a1a', fontFamily: "'Orbitron', sans-serif", fontSize: '11px' }}>
-                            <ArrowRight size={14} /> Back to Dashboard
+                            className="w-full py-3.5 rounded-xl font-black uppercase tracking-widest flex items-center justify-center gap-2"
+                            style={{
+                                background: `linear-gradient(135deg, ${room.color}, ${room.color}99)`,
+                                color: '#0a0a1a',
+                                fontFamily: "'Orbitron', sans-serif",
+                                fontSize: '12px',
+                                letterSpacing: '0.15em',
+                                boxShadow: `0 0 20px ${room.color}40`,
+                            }}>
+                            <ArrowRight size={15} /> Back to Dashboard
                         </button>
                     </>
                 )}

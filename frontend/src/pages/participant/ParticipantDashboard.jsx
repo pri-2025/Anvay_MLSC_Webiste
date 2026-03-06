@@ -339,52 +339,56 @@ const ParticipantDashboard = () => {
 
                 {/* ── Room 6: Final Integration ───────────────────── */}
                 <div
-                    onClick={() => navigate('/participant/final-integration')}
-                    className="rounded-2xl p-5 cursor-pointer transition-all hover:scale-[1.01]"
+                    onClick={() => roomsCompleted >= 5 && navigate('/participant/final-integration')}
+                    className="rounded-2xl p-5 transition-all"
                     style={{
                         background: roomsCompleted >= 5
-                            ? 'linear-gradient(135deg, rgba(167,139,250,0.12), rgba(15,52,96,0.4))'
-                            : 'rgba(15,52,96,0.25)',
+                            ? 'linear-gradient(135deg, rgba(167,139,250,0.15), rgba(15,52,96,0.4))'
+                            : 'linear-gradient(135deg, rgba(167,139,250,0.07), rgba(10,8,25,0.9))',
                         border: roomsCompleted >= 5
-                            ? '1px solid rgba(167,139,250,0.35)'
-                            : '1px solid rgba(255,255,255,0.05)',
-                        opacity: roomsCompleted >= 5 ? 1 : 0.6,
+                            ? '1px solid rgba(167,139,250,0.45)'
+                            : '1px solid rgba(167,139,250,0.30)',
+                        boxShadow: roomsCompleted >= 5
+                            ? '0 0 30px rgba(167,139,250,0.2)'
+                            : '0 0 22px rgba(167,139,250,0.12), inset 0 0 40px rgba(124,58,237,0.07)',
+                        cursor: roomsCompleted >= 5 ? 'pointer' : 'not-allowed',
                     }}
                 >
                     <div className="flex items-start justify-between gap-2 mb-2">
                         <div className="flex items-center gap-2">
-                            <GitBranch size={18} style={{ color: roomsCompleted >= 5 ? '#a78bfa' : '#4b5563', flexShrink: 0 }} />
+                            <GitBranch size={18} style={{ color: roomsCompleted >= 5 ? '#a78bfa' : '#9f7aea', flexShrink: 0 }} />
                             <div>
-                                <h3 className="text-base font-heading font-bold text-white">Final Integration</h3>
-                                <p className="text-xs" style={{ color: '#a78bfa' }}>Connect all 5 contracts</p>
+                                <h3 className="text-base font-heading font-bold" style={{ color: roomsCompleted >= 5 ? '#fff' : '#c4b5fd' }}>Final Integration</h3>
+                                <p className="text-xs" style={{ color: roomsCompleted >= 5 ? '#a78bfa' : '#9f7aea' }}>Connect all 5 contracts</p>
                             </div>
                         </div>
                         <span className="text-[9px] font-bold tracking-wider px-2 py-1 rounded-full flex-shrink-0"
                             style={{
-                                background: roomsCompleted >= 5 ? 'rgba(167,139,250,0.12)' : 'rgba(255,255,255,0.04)',
-                                color: roomsCompleted >= 5 ? '#a78bfa' : '#4b5563',
-                                border: roomsCompleted >= 5 ? '1px solid rgba(167,139,250,0.3)' : '1px solid rgba(255,255,255,0.06)',
+                                background: roomsCompleted >= 5 ? 'rgba(167,139,250,0.12)' : 'rgba(167,139,250,0.1)',
+                                color: roomsCompleted >= 5 ? '#a78bfa' : '#a78bfa',
+                                border: roomsCompleted >= 5 ? '1px solid rgba(167,139,250,0.3)' : '1px solid rgba(167,139,250,0.25)',
                             }}>
                             {roomsCompleted >= 5 ? 'UNLOCKED' : `${roomsCompleted}/5 ROOMS`}
                         </span>
                     </div>
-                    <p className="text-gray-500 text-xs mb-4 leading-relaxed">
+                    <p className="text-xs mb-4 leading-relaxed" style={{ color: roomsCompleted >= 5 ? '#9ca3af' : '#a78bfa99' }}>
                         Integrate all five BlockCity contracts into one unified Web3 frontend. Fork the GitHub repo and submit your live app.
                     </p>
-                    <button
-                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all"
+                    <div
+                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider"
                         style={{
                             background: roomsCompleted >= 5
                                 ? 'linear-gradient(135deg, #a78bfa, #7c3aed)'
-                                : 'rgba(255,255,255,0.04)',
-                            color: roomsCompleted >= 5 ? '#fff' : '#4b5563',
+                                : 'rgba(167,139,250,0.10)',
+                            color: roomsCompleted >= 5 ? '#fff' : '#c4b5fd',
+                            border: roomsCompleted >= 5 ? 'none' : '1px solid rgba(167,139,250,0.22)',
                             boxShadow: roomsCompleted >= 5 ? '0 0 15px rgba(167,139,250,0.3)' : 'none',
                         }}
                     >
                         {roomsCompleted >= 5
                             ? <><GitBranch size={12} /> View Challenge</>
                             : <><Lock size={12} /> Complete all rooms to unlock</>}
-                    </button>
+                    </div>
                 </div>
 
             </div>
