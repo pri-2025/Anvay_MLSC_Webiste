@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Trophy, Target, TrendingUp, MapPin, LogOut, CheckCircle, User, Scale, Briefcase, Palette, Landmark, Wrench, Home } from 'lucide-react';
+import { Trophy, Target, TrendingUp, MapPin, LogOut, CheckCircle, User, Scale, Briefcase, Palette, Landmark, Wrench, GitBranch, Lock } from 'lucide-react';
 import { useParticipant } from '../../context/ParticipantContext';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -54,8 +54,6 @@ const RoomCard = ({ room }) => {
         if (routeId) navigate(`/participant/room/${routeId}`);
     };
 
-    const RoomIcon = ROOM_ICONS[room.name] || Landmark;
-
     return (
         <div
             className="rounded-2xl p-5 transition-all hover:scale-[1.01]"
@@ -63,7 +61,10 @@ const RoomCard = ({ room }) => {
         >
             <div className="flex items-start justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2">
-                    <span className="flex items-center justify-center" style={{ color: accentColor }}><RoomIcon size={20} /></span>
+                    {React.createElement(ROOM_ICONS[room.name] || Landmark, {
+                        size: 18,
+                        style: { color: isCompleted ? '#34d399' : '#F9A24D', flexShrink: 0 }
+                    })}
                     <div>
                         <h3 className="text-base font-heading font-bold text-white">{room.name}</h3>
                         {isCompleted && roomScore !== null && (
@@ -151,10 +152,9 @@ const ScoreProgressBar = ({ totalScore, currentTier }) => {
                 </div>
             </div>
 
-            {/* Hint text */}
-            <p className="text-[10px] text-gray-600 mb-3">
+            <p className="text-[10px] text-gray-600 mb-3 flex items-center gap-1">
                 {ptsLeft === 0
-                    ? '🏆 Maximum score achieved!'
+                    ? <><Trophy size={10} style={{ color: '#F9A24D' }} /> Maximum score achieved!</>
                     : `${ptsLeft} pts remaining to max score`}
             </p>
 
@@ -312,7 +312,7 @@ const ParticipantDashboard = () => {
                     <h1 className="text-2xl font-heading font-bold text-white">
                         Welcome back, <span style={{ color: '#F9A24D' }}>{name || citizenId}</span>
                     </h1>
-                    {team && <p className="text-gray-500 text-sm mt-1 flex items-center gap-1.5"><Home size={13} /> {team}</p>}
+                    {team && <p className="text-gray-500 text-sm mt-1 flex items-center gap-1.5"><MapPin size={12} /> {team}</p>}
                 </div>
 
                 {/* ── Stat cards ─────────────────────────────────── */}
@@ -335,6 +335,56 @@ const ParticipantDashboard = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {rooms.map((room, i) => <RoomCard key={i} room={room} />)}
                     </div>
+                </div>
+
+                {/* ── Room 6: Final Integration ───────────────────── */}
+                <div
+                    onClick={() => navigate('/participant/final-integration')}
+                    className="rounded-2xl p-5 cursor-pointer transition-all hover:scale-[1.01]"
+                    style={{
+                        background: roomsCompleted >= 5
+                            ? 'linear-gradient(135deg, rgba(167,139,250,0.12), rgba(15,52,96,0.4))'
+                            : 'rgba(15,52,96,0.25)',
+                        border: roomsCompleted >= 5
+                            ? '1px solid rgba(167,139,250,0.35)'
+                            : '1px solid rgba(255,255,255,0.05)',
+                        opacity: roomsCompleted >= 5 ? 1 : 0.6,
+                    }}
+                >
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                        <div className="flex items-center gap-2">
+                            <GitBranch size={18} style={{ color: roomsCompleted >= 5 ? '#a78bfa' : '#4b5563', flexShrink: 0 }} />
+                            <div>
+                                <h3 className="text-base font-heading font-bold text-white">Final Integration</h3>
+                                <p className="text-xs" style={{ color: '#a78bfa' }}>Connect all 5 contracts</p>
+                            </div>
+                        </div>
+                        <span className="text-[9px] font-bold tracking-wider px-2 py-1 rounded-full flex-shrink-0"
+                            style={{
+                                background: roomsCompleted >= 5 ? 'rgba(167,139,250,0.12)' : 'rgba(255,255,255,0.04)',
+                                color: roomsCompleted >= 5 ? '#a78bfa' : '#4b5563',
+                                border: roomsCompleted >= 5 ? '1px solid rgba(167,139,250,0.3)' : '1px solid rgba(255,255,255,0.06)',
+                            }}>
+                            {roomsCompleted >= 5 ? 'UNLOCKED' : `${roomsCompleted}/5 ROOMS`}
+                        </span>
+                    </div>
+                    <p className="text-gray-500 text-xs mb-4 leading-relaxed">
+                        Integrate all five BlockCity contracts into one unified Web3 frontend. Fork the GitHub repo and submit your live app.
+                    </p>
+                    <button
+                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all"
+                        style={{
+                            background: roomsCompleted >= 5
+                                ? 'linear-gradient(135deg, #a78bfa, #7c3aed)'
+                                : 'rgba(255,255,255,0.04)',
+                            color: roomsCompleted >= 5 ? '#fff' : '#4b5563',
+                            boxShadow: roomsCompleted >= 5 ? '0 0 15px rgba(167,139,250,0.3)' : 'none',
+                        }}
+                    >
+                        {roomsCompleted >= 5
+                            ? <><GitBranch size={12} /> View Challenge</>
+                            : <><Lock size={12} /> Complete all rooms to unlock</>}
+                    </button>
                 </div>
 
             </div>
