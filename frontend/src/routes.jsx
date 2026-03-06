@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Admin from './pages/Admin';
 import NotFound from './pages/NotFound';
 import RoomPage from './pages/participant/RoomPage';
+import EventPage from './pages/EventPage';
 
 // Participant Pages
 import ParticipantLogin from './pages/participant/ParticipantLogin';
@@ -17,6 +18,7 @@ const AppRoutes = () => {
     return (
         <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/event" element={<EventPage />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/participant/room/:roomId" element={<RoomPage />} />
 

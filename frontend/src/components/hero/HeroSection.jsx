@@ -1,7 +1,10 @@
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const HeroSection = () => {
+    const navigate = useNavigate();
+
     return (
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
             {/* Animation keyframes */}
@@ -152,27 +155,31 @@ const HeroSection = () => {
                     >
                         VIEW LEADERBOARD
                     </a>
-                    <a
-                        href="#badge-lookup"
+
+                    {/* REPLACED: Find Your Badge → Event */}
+                    <button
+                        onClick={() => navigate('/event')}
                         className="px-9 py-4 font-bold rounded-xl text-sm md:text-base tracking-wider uppercase transition-all duration-300 hover:scale-105"
                         style={{
                             border: '2px solid rgba(249,162,77,0.4)',
                             color: '#F9A24D',
                             boxShadow: '0 0 20px rgba(249,162,77,0.1)',
+                            background: 'transparent',
+                            cursor: 'pointer',
                         }}
                         onMouseEnter={(e) => {
-                            e.target.style.borderColor = '#F9A24D';
-                            e.target.style.boxShadow = '0 0 35px rgba(249,162,77,0.25)';
-                            e.target.style.backgroundColor = 'rgba(249,162,77,0.08)';
+                            e.currentTarget.style.borderColor = '#F9A24D';
+                            e.currentTarget.style.boxShadow = '0 0 35px rgba(249,162,77,0.25)';
+                            e.currentTarget.style.backgroundColor = 'rgba(249,162,77,0.08)';
                         }}
                         onMouseLeave={(e) => {
-                            e.target.style.borderColor = 'rgba(249,162,77,0.4)';
-                            e.target.style.boxShadow = '0 0 20px rgba(249,162,77,0.1)';
-                            e.target.style.backgroundColor = 'transparent';
+                            e.currentTarget.style.borderColor = 'rgba(249,162,77,0.4)';
+                            e.currentTarget.style.boxShadow = '0 0 20px rgba(249,162,77,0.1)';
+                            e.currentTarget.style.backgroundColor = 'transparent';
                         }}
                     >
-                        FIND YOUR BADGE
-                    </a>
+                        EVENT
+                    </button>
                 </div>
             </div>
 
@@ -182,7 +189,7 @@ const HeroSection = () => {
                     <ChevronDown size={28} />
                 </a>
             </div>
-        </section >
+        </section>
     );
 };
 
