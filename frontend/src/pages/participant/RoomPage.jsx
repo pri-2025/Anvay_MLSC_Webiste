@@ -250,10 +250,7 @@ const CompleteModal = ({ room, citizenId, onClose, onSuccess }) => {
                             </p>
                             <Star size={13} style={{ color: '#F9A24D' }} />
                         </div>
-                        <p className="text-center mb-6"
-                            style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: '13px', color: '#6b7280', letterSpacing: '0.03em' }}>
-                            Admin may award up to +5 bonus pts
-                        </p>
+
 
                         {/* Reward snippet */}
                         <div className="mb-5">
