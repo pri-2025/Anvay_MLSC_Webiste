@@ -1,9 +1,8 @@
-const admin = require("firebase-admin");
-const serviceAccount = require("../config/serviceAccountKey.json");
+const mongoose = require('mongoose');
+const Admin = require('../models/Admin');
+require('dotenv').config({ path: '../.env' });
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://ayushirahane2021_db_user:cH3CUSjsn3swThMu@cluster0.rspwx9g.mongodb.net/?appName=Cluster0";
 
 const mentors = [
   { email: "mentorR1Sahisha@blockcity.com", password: "Sah!R1#92XqL" },
@@ -27,20 +26,33 @@ const mentors = [
 ];
 
 async function createMentors() {
-  for (const mentor of mentors) {
-    try {
-      const user = await admin.auth().createUser({
-        email: mentor.email,
-        password: mentor.password,
-      });
+  try {
+    await mongoose.connect(MONGO_URI);
+    console.log('MongoDB Connected for Mentor Importer');
 
-      // Optional: add role claim
-      await admin.auth().setCustomUserClaims(user.uid, { role: "mentor" });
+    let createdCount = 0;
+    let skipCount = 0;
 
-      console.log(`Created: ${mentor.email}`);
-    } catch (error) {
-      console.log(`Error creating ${mentor.email}:`, error.message);
+    for (const mentor of mentors) {
+      const exists = await Admin.findOne({ email: mentor.email });
+      if (!exists) {
+        await Admin.create({
+          email: mentor.email,
+          password: mentor.password
+        });
+        console.log(`Created: ${mentor.email}`);
+        createdCount++;
+      } else {
+        console.log(`Skipped existing: ${mentor.email}`);
+        skipCount++;
+      }
     }
+
+    console.log(`Finished migrating mentors! Created: ${createdCount}, Skipped: ${skipCount}`);
+    process.exit(0);
+  } catch (error) {
+    console.error('Error creating mentors:', error);
+    process.exit(1);
   }
 }
 

@@ -1,64 +1,46 @@
-// Firebase Firestore direct-access helpers.
-// Used by the admin SubmissionQueue and ParticipantContext.
-import { db } from "../firebase";
-import {
-    collection,
-    doc,
-    getDocs,
-    getDoc,
-    addDoc,
-    deleteDoc,
-    updateDoc,
-    query,
-    where
-} from "firebase/firestore";
+// Rewritten to use the backend API instead of Firebase client SDK
+import API from './api';
 
 /* ---------------- PARTICIPANTS ---------------- */
 
 export const getParticipants = async () => {
-    const snapshot = await getDocs(collection(db, "participants"));
-    return snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-    }));
+    const res = await API.get('/participants');
+    return res.data;
 };
 
 export const getParticipantByUce = async (uce) => {
-    const q = query(collection(db, "participants"), where("uce", "==", uce));
-    const snapshot = await getDocs(q);
-    if (snapshot.empty) return null;
-    return { id: snapshot.docs[0].id, ...snapshot.docs[0].data() };
+    try {
+        const res = await API.get(`/participants/${uce}`);
+        return res.data;
+    } catch (err) {
+        if (err.response?.status === 404) return null;
+        throw err;
+    }
 };
 
 /* ---------------- SUBMISSIONS ---------------- */
 
 export const createSubmission = async (data) => {
-    const docRef = await addDoc(collection(db, "submissions"), data);
-    return { id: docRef.id, ...data };
+    const res = await API.post('/submissions', data);
+    return res.data;
 };
 
 export const getSubmissionsByRoom = async (roomId) => {
-    const q = query(collection(db, "submissions"), where("roomId", "==", roomId));
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const res = await API.get(`/submissions/room/${roomId}`);
+    return res.data;
 };
 
 export const updateSubmissionStatus = async (id, data) => {
-    await updateDoc(doc(db, "submissions", id), data);
-    return { success: true };
+    const res = await API.put(`/submissions/${id}/status`, data);
+    return res.data;
 };
 
 export const deleteSubmission = async (id) => {
-    await deleteDoc(doc(db, "submissions", id));
-    return { success: true };
+    const res = await API.delete(`/submissions/${id}`);
+    return res.data;
 };
 
 export const removeExtraPoints = async (id, index) => {
-    const ref = doc(db, "submissions", id);
-    const submission = await getDoc(ref);
-    const data = submission.data();
-    const updatedExtra = [...(data.extraPoints || [])];
-    updatedExtra.splice(index, 1);
-    await updateDoc(ref, { extraPoints: updatedExtra });
-    return { success: true };
+    const res = await API.delete(`/submissions/${id}/extra/${index}`);
+    return res.data;
 };

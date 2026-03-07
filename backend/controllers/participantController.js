@@ -1,6 +1,4 @@
-const { db } = require('../config/firebaseAdmin');
-
-const participantsCollection = db.collection('participants');
+const Participant = require('../models/Participant');
 
 const calcTotal = (data) =>
     Number(data.room1 || 0) +
@@ -18,8 +16,7 @@ const calculateTier = (totalScore) => {
     return 'Explorer';
 };
 
-// Maps backend Firestore data → frontend room objects
-// All rooms always accessible — no sequential lock
+// Maps backend DB data → frontend room objects
 const mapRoomsForFrontend = (data) => {
     const roomDefs = [
         { id: 'room1', name: 'Law Foundry', description: 'Learn about smart contracts and Solidity basics' },
@@ -50,13 +47,13 @@ const mapRoomsForFrontend = (data) => {
 // @route   GET /api/participants
 const getParticipants = async (req, res, next) => {
     try {
-        const snapshot = await participantsCollection.orderBy('totalScore', 'desc').get();
-        const participants = snapshot.docs.map((doc, index) => ({
+        const participants = await Participant.find().sort({ totalScore: -1 }).lean();
+        const mapped = participants.map((doc, index) => ({
             rank: index + 1,
-            id: doc.id,
-            ...doc.data(),
+            id: doc.citizenId,
+            ...doc,
         }));
-        res.json(participants);
+        res.json(mapped);
     } catch (error) {
         next(error);
     }
@@ -67,22 +64,20 @@ const getParticipants = async (req, res, next) => {
 const getParticipantByUce = async (req, res, next) => {
     try {
         const uce = req.params.uce.toUpperCase();
-        const doc = await participantsCollection.doc(uce).get();
+        const doc = await Participant.findOne({ citizenId: uce }).lean();
 
-        if (!doc.exists) return res.status(404).json({ message: 'Participant not found' });
+        if (!doc) return res.status(404).json({ message: 'Participant not found' });
 
-        const rawData = doc.data();
-        const rooms = mapRoomsForFrontend(rawData);
-        const totalScore = calcTotal(rawData);
+        const rooms = mapRoomsForFrontend(doc);
+        const totalScore = calcTotal(doc);
         const currentTier = calculateTier(totalScore);
 
         // currentRoom = first incomplete room, or 'All Complete'
         const currentRoom = rooms.find(r => !r.completed)?.name || 'All Complete';
 
         res.json({
-            id: doc.id,
-            citizenId: doc.id,
-            ...rawData,
+            id: doc.citizenId,
+            ...doc,
             totalScore,
             currentTier,
             currentRoom,
@@ -100,14 +95,16 @@ const updateBonusScore = async (req, res, next) => {
         const uce = req.params.uce.toUpperCase();
         const { bonusScore } = req.body;
 
-        const docRef = participantsCollection.doc(uce);
-        const doc = await docRef.get();
-        if (!doc.exists) return res.status(404).json({ message: 'Participant not found' });
+        const doc = await Participant.findOne({ citizenId: uce });
+        if (!doc) return res.status(404).json({ message: 'Participant not found' });
 
-        const updated = { ...doc.data(), bonusScore: Number(bonusScore) };
-        const totalScore = calcTotal(updated);
+        const updatedData = { ...doc.toObject(), bonusScore: Number(bonusScore) };
+        const totalScore = calcTotal(updatedData);
 
-        await docRef.update({ bonusScore: Number(bonusScore), totalScore });
+        doc.bonusScore = Number(bonusScore);
+        doc.totalScore = totalScore;
+        await doc.save();
+
         res.json({ message: 'Bonus score updated', uce, bonusScore, totalScore });
     } catch (error) {
         next(error);
@@ -121,14 +118,16 @@ const updateFinalProjectScore = async (req, res, next) => {
         const uce = req.params.uce.toUpperCase();
         const { finalProjectScore } = req.body;
 
-        const docRef = participantsCollection.doc(uce);
-        const doc = await docRef.get();
-        if (!doc.exists) return res.status(404).json({ message: 'Participant not found' });
+        const doc = await Participant.findOne({ citizenId: uce });
+        if (!doc) return res.status(404).json({ message: 'Participant not found' });
 
-        const updated = { ...doc.data(), finalProjectScore: Number(finalProjectScore) };
-        const totalScore = calcTotal(updated);
+        const updatedData = { ...doc.toObject(), finalProjectScore: Number(finalProjectScore) };
+        const totalScore = calcTotal(updatedData);
 
-        await docRef.update({ finalProjectScore: Number(finalProjectScore), totalScore });
+        doc.finalProjectScore = Number(finalProjectScore);
+        doc.totalScore = totalScore;
+        await doc.save();
+
         res.json({ message: 'Final project score updated', uce, finalProjectScore, totalScore });
     } catch (error) {
         next(error);
@@ -146,20 +145,20 @@ const completeRoom = async (req, res, next) => {
             return res.status(400).json({ message: 'Invalid roomId' });
         }
 
-        const docRef = participantsCollection.doc(uce);
-        const doc = await docRef.get();
-        if (!doc.exists) return res.status(404).json({ message: 'Participant not found' });
+        const doc = await Participant.findOne({ citizenId: uce });
+        if (!doc) return res.status(404).json({ message: 'Participant not found' });
 
-        const rawData = doc.data();
-
-        if (Number(rawData[roomId] || 0) > 0) {
+        if (Number(doc[roomId] || 0) > 0) {
             return res.status(400).json({ message: 'Room already completed' });
         }
 
-        const updated = { ...rawData, [roomId]: 10 };
-        const totalScore = calcTotal(updated);
+        const updatedData = { ...doc.toObject(), [roomId]: 10 };
+        const totalScore = calcTotal(updatedData);
 
-        await docRef.update({ [roomId]: 10, totalScore });
+        doc[roomId] = 10;
+        doc.totalScore = totalScore;
+        await doc.save();
+
         res.json({ message: 'Room completed', uce, roomId, roomScore: 10, totalScore });
     } catch (error) {
         next(error);

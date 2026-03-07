@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Lock, LogIn } from 'lucide-react';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { auth } from '../../firebase'; // adjust path if needed
+import API from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 
 const AdminLogin = () => {
@@ -26,36 +25,22 @@ const AdminLogin = () => {
         setError('');
 
         try {
-            // 🔥 Firebase Authentication
-            const userCredential = await signInWithEmailAndPassword(
-                auth,
-                formData.email,
-                formData.password
-            );
-
-            const user = userCredential.user;
-
-           
+            const { data } = await API.post('/mentors/login', {
+                email: formData.email,
+                password: formData.password
+            });
 
             // Store user in AuthContext
             login(
                 {
                     name: "Admin",
-                    email: user.email,
+                    email: data.email,
+                    id: data._id
                 },
-                user.accessToken
+                data.token
             );
-
         } catch (err) {
-            if (err.code === "auth/user-not-found") {
-                setError("Admin account not found.");
-            } else if (err.code === "auth/wrong-password") {
-                setError("Incorrect password.");
-            } else if (err.code === "auth/invalid-email") {
-                setError("Invalid email format.");
-            } else {
-                setError("Login failed. Please try again.");
-            }
+            setError(err.response?.data?.message || err.message || "Login failed. Please try again.");
         } finally {
             setLoading(false);
         }

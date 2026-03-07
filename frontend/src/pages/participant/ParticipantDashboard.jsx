@@ -139,7 +139,7 @@ const ScoreProgressBar = ({ totalScore, currentTier }) => {
     const pct = getOverallProgress(totalScore);
     const ptsLeft = Math.max(0, MAX_SCORE - totalScore);
 
-    // Milestone positions as % of 75
+    // Milestone positions as absolute scores
     const milestones = [
         { label: 'Explorer', score: 0, tier: 'Explorer' },
         { label: 'Builder', score: 25, tier: 'Builder' },
@@ -208,7 +208,7 @@ const ScoreProgressBar = ({ totalScore, currentTier }) => {
                         className="h-full rounded-full transition-all duration-1000"
                         style={{
                             width: `${pct}%`,
-                            background: pct >= 67
+                            background: pct >= 66
                                 ? 'linear-gradient(90deg,#34d399,#F9A24D,#ef4444)'
                                 : pct >= 33
                                     ? 'linear-gradient(90deg,#34d399,#F9A24D)'

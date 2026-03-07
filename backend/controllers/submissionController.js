@@ -1,7 +1,5 @@
-const { db } = require('../config/firebaseAdmin');
-
-const submissionsCollection = db.collection('submissions');
-const participantsCollection = db.collection('participants');
+const Submission = require('../models/Submission');
+const Participant = require('../models/Participant');
 
 const calcTotal = (data) =>
     Number(data.room1 || 0) +
@@ -33,49 +31,46 @@ const createSubmission = async (req, res, next) => {
         }
 
         // Check if a pending or approved submission already exists for this UCE + SPECIFIC room
-        const snapshot = await submissionsCollection
-            .where('uce', '==', uce.toUpperCase())
-            .get();
-
-        const activeSubmissions = snapshot.docs.filter(doc => {
-            const data = doc.data();
-            return data.roomId === roomId && (data.status === 'pending' || data.status === 'approved');
+        const existingSub = await Submission.findOne({
+            uce: uce.toUpperCase(),
+            roomId,
+            status: { $in: ['pending', 'approved'] }
         });
 
-        if (activeSubmissions.length > 0) {
+        if (existingSub) {
             return res.status(400).json({ message: 'Submission already exists for this specific room.' });
         }
 
         // Create new submission - Automatically approve if code is correct
-        const newSubmission = {
+        const newSubmission = await Submission.create({
             uce: uce.toUpperCase(),
             roomId,
             name: name || 'Unknown',
             tier: tier || 'Explorer',
-            basePoints: 10, // Default base points updated to 10
+            basePoints: 10,
             extraPoints: 0,
-            status: 'approved', // Auto-approved on valid code
+            status: 'approved',
             extraHistory: [],
-            submittedAt: new Date().toISOString(),
-            approvedAt: new Date().toISOString()
-        };
-
-        const docRef = await submissionsCollection.add(newSubmission);
+            submittedAt: new Date(),
+        });
 
         // Also update the participant's score immediately
-        const pDocRef = participantsCollection.doc(uce.toUpperCase());
-        const pDoc = await pDocRef.get();
-        if (pDoc.exists) {
-            const updatedP = { ...pDoc.data(), [roomId]: 10 };
-            const newTotalScore = calcTotal(updatedP);
-            await pDocRef.update({
-                [roomId]: 10,
-                totalScore: newTotalScore
-            });
+        const pDoc = await Participant.findOne({ citizenId: uce.toUpperCase() });
+        if (pDoc) {
+            const updatedData = { ...pDoc.toObject(), [roomId]: 10 };
+            const newTotalScore = calcTotal(updatedData);
+
+            pDoc[roomId] = 10;
+            pDoc.totalScore = newTotalScore;
+            await pDoc.save();
         }
 
-        res.status(201).json({ id: docRef.id, ...newSubmission });
+        res.status(201).json({ id: newSubmission._id, ...newSubmission.toObject() });
     } catch (error) {
+        // Handle unique compound index error
+        if (error.code === 11000) {
+            return res.status(400).json({ message: 'Submission already exists for this specific room.' });
+        }
         next(error);
     }
 };
@@ -85,20 +80,15 @@ const createSubmission = async (req, res, next) => {
 const getSubmissionsByRoom = async (req, res, next) => {
     try {
         const { roomId } = req.params;
-        const snapshot = await submissionsCollection
-            .where('roomId', '==', roomId)
-            .get();
+        const submissions = await Submission.find({ roomId }).sort({ submittedAt: -1 }).lean();
 
-        const submissions = snapshot.docs.map(doc => ({
-            id: doc.id,
-            citizenId: doc.data().uce, // Map uce back to citizenId for UI
-            ...doc.data()
+        const mapped = submissions.map(doc => ({
+            id: doc._id,
+            citizenId: doc.uce,
+            ...doc
         }));
 
-        // Sort by submittedAt descending (newest first)
-        submissions.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
-
-        res.json(submissions);
+        res.json(mapped);
     } catch (error) {
         next(error);
     }
@@ -111,42 +101,37 @@ const updateSubmissionStatus = async (req, res, next) => {
         const { id } = req.params;
         const { status, extraPoints, reason } = req.body;
 
-        const docRef = submissionsCollection.doc(id);
-        const doc = await docRef.get();
-        if (!doc.exists) return res.status(404).json({ message: 'Submission not found' });
+        const doc = await Submission.findById(id);
+        if (!doc) return res.status(404).json({ message: 'Submission not found' });
 
-        const subData = doc.data();
-        const updates = {};
-
-        if (status) updates.status = status;
+        if (status) doc.status = status;
 
         // If adding extra points
         if (extraPoints !== undefined) {
-            updates.extraPoints = subData.extraPoints + Number(extraPoints);
-            updates.extraHistory = [
-                { points: Number(extraPoints), reason: reason || '', addedAt: new Date().toISOString() },
-                ...(subData.extraHistory || [])
-            ];
-        }
-
-        await docRef.update(updates);
-        const finalExtra = updates.extraPoints !== undefined ? updates.extraPoints : subData.extraPoints;
-
-        // Update the actual participant score in Firestore for this room
-        const totalRoomScore = subData.basePoints + finalExtra;
-        const pDocRef = participantsCollection.doc(subData.uce);
-        const pDoc = await pDocRef.get();
-        if (pDoc.exists) {
-            const updatedP = { ...pDoc.data(), [subData.roomId]: totalRoomScore };
-            const newTotalScore = calcTotal(updatedP);
-            await pDocRef.update({
-                [subData.roomId]: totalRoomScore,
-                totalScore: newTotalScore
+            doc.extraPoints = doc.extraPoints + Number(extraPoints);
+            doc.extraHistory.unshift({
+                points: Number(extraPoints),
+                reason: reason || '',
+                date: new Date()
             });
         }
 
+        await doc.save();
+        const finalExtra = doc.extraPoints;
 
-        res.json({ message: 'Submission updated successfully', id, ...updates });
+        // Update the actual participant score in DB for this room
+        const totalRoomScore = doc.basePoints + finalExtra;
+        const pDoc = await Participant.findOne({ citizenId: doc.uce });
+        if (pDoc) {
+            const updatedData = { ...pDoc.toObject(), [doc.roomId]: totalRoomScore };
+            const newTotalScore = calcTotal(updatedData);
+
+            pDoc[doc.roomId] = totalRoomScore;
+            pDoc.totalScore = newTotalScore;
+            await pDoc.save();
+        }
+
+        res.json({ message: 'Submission updated successfully', id, status: doc.status, extraPoints: doc.extraPoints, extraHistory: doc.extraHistory });
     } catch (error) {
         next(error);
     }
@@ -157,11 +142,9 @@ const updateSubmissionStatus = async (req, res, next) => {
 const deleteSubmission = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const docRef = submissionsCollection.doc(id);
-        const doc = await docRef.get();
-        if (!doc.exists) return res.status(404).json({ message: 'Submission not found' });
+        const doc = await Submission.findByIdAndDelete(id);
+        if (!doc) return res.status(404).json({ message: 'Submission not found' });
 
-        await docRef.delete();
         res.json({ message: 'Submission permanently deleted' });
     } catch (error) {
         next(error);
@@ -173,12 +156,10 @@ const deleteSubmission = async (req, res, next) => {
 const removeExtraPoints = async (req, res, next) => {
     try {
         const { id, index } = req.params;
-        const docRef = submissionsCollection.doc(id);
-        const doc = await docRef.get();
-        if (!doc.exists) return res.status(404).json({ message: 'Submission not found' });
+        const doc = await Submission.findById(id);
+        if (!doc) return res.status(404).json({ message: 'Submission not found' });
 
-        const subData = doc.data();
-        const history = subData.extraHistory || [];
+        const history = doc.extraHistory || [];
         const idx = parseInt(index);
 
         if (isNaN(idx) || idx < 0 || idx >= history.length) {
@@ -186,26 +167,22 @@ const removeExtraPoints = async (req, res, next) => {
         }
 
         const removedEntry = history[idx];
-        const newExtraPoints = subData.extraPoints - removedEntry.points;
-        const newHistory = [...history];
-        newHistory.splice(idx, 1);
+        const newExtraPoints = doc.extraPoints - removedEntry.points;
 
-        await docRef.update({
-            extraPoints: newExtraPoints,
-            extraHistory: newHistory
-        });
+        doc.extraHistory.splice(idx, 1);
+        doc.extraPoints = newExtraPoints;
+        await doc.save();
 
         // Update participant score
-        const totalRoomScore = subData.basePoints + newExtraPoints;
-        const pDocRef = participantsCollection.doc(subData.uce);
-        const pDoc = await pDocRef.get();
-        if (pDoc.exists) {
-            const updatedP = { ...pDoc.data(), [subData.roomId]: totalRoomScore };
-            const newTotalScore = calcTotal(updatedP);
-            await pDocRef.update({
-                [subData.roomId]: totalRoomScore,
-                totalScore: newTotalScore
-            });
+        const totalRoomScore = doc.basePoints + newExtraPoints;
+        const pDoc = await Participant.findOne({ citizenId: doc.uce });
+        if (pDoc) {
+            const updatedData = { ...pDoc.toObject(), [doc.roomId]: totalRoomScore };
+            const newTotalScore = calcTotal(updatedData);
+
+            pDoc[doc.roomId] = totalRoomScore;
+            pDoc.totalScore = newTotalScore;
+            await pDoc.save();
         }
 
         res.json({ message: 'Extra points removed', extraPoints: newExtraPoints });
