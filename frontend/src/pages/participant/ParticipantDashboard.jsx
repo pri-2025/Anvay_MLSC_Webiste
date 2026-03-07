@@ -74,11 +74,16 @@ const RoomCard = ({ room }) => {
                         style: { color: isCompleted ? '#34d399' : '#F9A24D', flexShrink: 0 }
                     })}
                     <div>
-                        <h3 className="text-base font-heading font-bold text-white">
-                            {ROOM_NUMBER[room.name] ? `Room ${ROOM_NUMBER[room.name]}: ` : ''}{room.name}
+                        <h3 className="text-base font-heading font-bold text-white leading-tight">
+                            {ROOM_NUMBER[room.name] && (
+                                <span style={{ color: accentColor, textShadow: `0 0 10px ${accentColor}`, marginRight: '4px' }}>
+                                    Room {ROOM_NUMBER[room.name]}:
+                                </span>
+                            )}
+                            {room.name}
                         </h3>
                         {isCompleted && roomScore !== null && (
-                            <p className="text-xs font-bold" style={{ color: '#34d399' }}>+{roomScore} pts earned</p>
+                            <p className="text-xs font-bold" style={{ color: '#34d399', marginTop: '4px' }}>+{roomScore} pts earned</p>
                         )}
                     </div>
                 </div>
