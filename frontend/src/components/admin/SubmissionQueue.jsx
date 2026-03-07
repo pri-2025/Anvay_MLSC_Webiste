@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Check, X, Plus, Clock, ChevronDown, ChevronUp, FileText, Trash2 } from 'lucide-react';
+import { Search, Check, X, Plus, Clock, ChevronDown, ChevronUp, FileText, Trash2, CheckCircle, RefreshCw } from 'lucide-react';
 import ExtraPointsModal from './ExtraPointsModal';
 import { getSubmissionsByRoom, updateSubmissionStatus, deleteSubmission, removeExtraPoints } from '../../services/firebaseApi';
 
@@ -45,8 +45,7 @@ const SubmissionQueue = ({ room }) => {
 
     useEffect(() => {
         fetchSubmissions();
-        const interval = setInterval(fetchSubmissions, 10000); // Polling every 10s
-        return () => clearInterval(interval);
+        // Removed auto-polling to prevent Firebase quota exhaustion
     }, [room.id]);
 
     const handleExtraPointsSave = async (id, points, reason) => {
