@@ -29,6 +29,14 @@ const ROOM_ROUTE_MAP = {
     'Control Center': 'room5',
 };
 
+const ROOM_NUMBER = {
+    'Law Foundry': 1,
+    'Treasury Mint': 2,
+    'Identity Bureau': 3,
+    'Council Chamber': 4,
+    'Control Center': 5,
+};
+
 // ─── StatCard ─────────────────────────────────────────────────────────────────
 const StatCard = ({ icon: Icon, label, value, iconColor, valueColor }) => (
     <div className="rounded-2xl p-5 flex flex-col gap-3"
@@ -66,7 +74,9 @@ const RoomCard = ({ room }) => {
                         style: { color: isCompleted ? '#34d399' : '#F9A24D', flexShrink: 0 }
                     })}
                     <div>
-                        <h3 className="text-base font-heading font-bold text-white">{room.name}</h3>
+                        <h3 className="text-base font-heading font-bold text-white">
+                            {ROOM_NUMBER[room.name] ? `Room ${ROOM_NUMBER[room.name]}: ` : ''}{room.name}
+                        </h3>
                         {isCompleted && roomScore !== null && (
                             <p className="text-xs font-bold" style={{ color: '#34d399' }}>+{roomScore} pts earned</p>
                         )}
