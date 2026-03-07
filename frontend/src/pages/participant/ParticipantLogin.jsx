@@ -84,6 +84,7 @@ const ParticipantLogin = () => {
                             Citizen ID
                         </label>
                         <input
+                            placeholder="Enter UCN : UCE20240XX"
                             type="text"
                             value={citizenId}
                             onChange={e => setCitizenId(e.target.value)}
