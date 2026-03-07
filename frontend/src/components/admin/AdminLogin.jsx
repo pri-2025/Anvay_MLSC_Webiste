@@ -25,9 +25,9 @@ const AdminLogin = () => {
         setError('');
 
         try {
-            const { data } = await API.post('/mentors/login', {
-                email: formData.email,
-                password: formData.password
+            const { data } = await API.post('/admin/login', {
+                email: formData.email.trim(),
+                password: formData.password.trim()
             });
 
             // Store user in AuthContext
