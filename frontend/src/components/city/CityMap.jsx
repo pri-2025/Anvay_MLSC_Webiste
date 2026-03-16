@@ -1,5 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Scale, Landmark, Fingerprint, Building2, Shield, X, Cloud } from 'lucide-react';
+
+const useIsMobile = () => {
+    const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+    useEffect(() => {
+        const handler = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handler);
+        return () => window.removeEventListener('resize', handler);
+    }, []);
+    return isMobile;
+};
 
 const ROOMS = [
     {
@@ -63,7 +73,7 @@ const CONNECTIONS = [
     { from: 2, to: 4 },
 ];
 
-const CityNode = ({ room, onClick, connections }) => {
+const CityNode = ({ room, onClick, connections, isMobile }) => {
     const [hovered, setHovered] = useState(false);
     const { Icon, color, x, y, name } = room;
     const showAbove = y > 45;
@@ -80,7 +90,7 @@ const CityNode = ({ room, onClick, connections }) => {
             <div
                 className="absolute rounded-full animate-ping"
                 style={{
-                    width: '90px', height: '90px',
+                    width: isMobile ? '52px' : '90px', height: isMobile ? '52px' : '90px',
                     left: '50%', top: '50%',
                     transform: 'translate(-50%, -50%)',
                     border: `2px solid ${color}`,
@@ -93,7 +103,7 @@ const CityNode = ({ room, onClick, connections }) => {
             <div
                 className="absolute rounded-full"
                 style={{
-                    width: '110px', height: '110px',
+                    width: isMobile ? '64px' : '110px', height: isMobile ? '64px' : '110px',
                     left: '50%', top: '50%',
                     transform: 'translate(-50%, -50%)',
                     border: `1px solid ${hovered ? color : `${color}40`}`,
@@ -106,7 +116,7 @@ const CityNode = ({ room, onClick, connections }) => {
             <div
                 className="absolute rounded-full transition-all duration-500"
                 style={{
-                    width: '76px', height: '76px',
+                    width: isMobile ? '44px' : '76px', height: isMobile ? '44px' : '76px',
                     left: '50%', top: '50%',
                     transform: 'translate(-50%, -50%)',
                     border: `3px solid ${hovered ? color : `${color}80`}`,
@@ -120,7 +130,7 @@ const CityNode = ({ room, onClick, connections }) => {
             <div
                 className="relative rounded-full flex items-center justify-center transition-all duration-500"
                 style={{
-                    width: '60px', height: '60px',
+                    width: isMobile ? '34px' : '60px', height: isMobile ? '34px' : '60px',
                     background: hovered
                         ? `radial-gradient(circle, ${color}90, ${color}40, transparent)`
                         : `radial-gradient(circle, ${color}60, ${color}20, transparent)`,
@@ -132,34 +142,37 @@ const CityNode = ({ room, onClick, connections }) => {
                 }}
             >
                 <Icon
-                    size={hovered ? 28 : 24}
+                    size={isMobile ? (hovered ? 16 : 13) : (hovered ? 28 : 24)}
                     style={{ color: '#fff' }}
                     className="transition-all duration-300 drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]"
                 />
             </div>
 
             {/* Floating cloud icon above */}
-            <div
-                className="absolute left-1/2 -translate-x-1/2 transition-all duration-500"
-                style={{ top: '-30px', opacity: hovered ? 1 : 0.35 }}
-            >
-                <Cloud
-                    size={16}
-                    style={{ color }}
-                    className={hovered ? 'animate-pulse' : ''}
-                    fill={hovered ? `${color}40` : 'none'}
-                />
-            </div>
+            {!isMobile && (
+                <div
+                    className="absolute left-1/2 -translate-x-1/2 transition-all duration-500"
+                    style={{ top: '-30px', opacity: hovered ? 1 : 0.35 }}
+                >
+                    <Cloud
+                        size={16}
+                        style={{ color }}
+                        className={hovered ? 'animate-pulse' : ''}
+                        fill={hovered ? `${color}40` : 'none'}
+                    />
+                </div>
+            )}
 
             {/* Label — always visible, hides when card is showing */}
             {!hovered && (
                 <div
                     className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-center transition-all duration-300"
-                    style={{ top: '70px' }}
+                    style={{ top: isMobile ? '38px' : '70px' }}
                 >
                     <p
-                        className="text-xs font-bold tracking-wide"
+                        className="font-bold tracking-wide"
                         style={{
+                            fontSize: isMobile ? '7px' : '12px',
                             color: '#e2e8f0',
                             textShadow: `0 0 12px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.8)`,
                         }}
@@ -247,6 +260,7 @@ const CityNode = ({ room, onClick, connections }) => {
 };
 
 const CityMap = () => {
+    const isMobile = useIsMobile();
     const [selectedRoom, setSelectedRoom] = useState(null);
 
     const handleNodeClick = (room) => {
@@ -360,6 +374,7 @@ const CityMap = () => {
                             key={room.id}
                             room={room}
                             onClick={() => handleNodeClick(room)}
+                            isMobile={isMobile}
                             connections={
                                 CONNECTIONS.filter(c =>
                                     ROOMS[c.from].id === room.id || ROOMS[c.to].id === room.id
