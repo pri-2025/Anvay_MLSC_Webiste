@@ -81,16 +81,16 @@ const Leaderboard = () => {
 
                 {/* Table */}
                 <div
-                    className="rounded-2xl border overflow-x-auto"
+                    className="rounded-2xl border"
                     style={{
                         backgroundColor: 'rgba(15, 18, 35, 0.8)',
                         borderColor: 'rgba(255,255,255,0.06)',
                         boxShadow: '0 0 60px rgba(0,0,0,0.5)',
                     }}
                 >
-                    <div className="min-w-[700px] w-full">
-                        {/* Table Header */}
-                        <div className="grid grid-cols-9 gap-4 px-6 py-4 border-b border-white/5">
+                    <div className="w-full">
+                        {/* Table Header — hidden on mobile */}
+                        <div className="hidden md:grid grid-cols-9 gap-4 px-6 py-4 border-b border-white/5">
                             <span className="col-span-2 text-xs font-semibold text-gray-500 uppercase tracking-widest">Rank</span>
                             <span className="col-span-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">Name</span>
                             <span className="col-span-2 text-xs font-semibold text-gray-500 uppercase tracking-widest">Points</span>
@@ -110,66 +110,87 @@ const Leaderboard = () => {
                                 return (
                                     <div
                                         key={entry.citizenId || entry.id || index}
-                                        className="grid grid-cols-9 gap-4 items-center px-6 py-4 border-b transition-colors hover:bg-white/[0.03]"
+                                        className="border-b transition-colors hover:bg-white/[0.03]"
                                         style={{
                                             borderColor: isTopThree ? 'rgba(249,162,77,0.15)' : 'rgba(255,255,255,0.03)',
                                             backgroundColor: isTopThree ? 'rgba(249,162,77,0.03)' : 'transparent',
                                         }}
                                     >
-                                        {/* Rank — medal icon for top 3 */}
-                                        <div className="col-span-2 flex items-center gap-2">
-                                            {isTopThree ? (
-                                                <Medal
-                                                    size={20}
-                                                    style={{ color: medalColor, filter: `drop-shadow(0 0 6px ${medalColor})` }}
-                                                />
-                                            ) : null}
-                                            <span
-                                                className="text-lg font-bold"
-                                                style={{
-                                                    fontFamily: "'Orbitron', sans-serif",
-                                                    color: isTopThree ? medalColor : '#6b7280',
-                                                    textShadow: isTopThree ? `0 0 15px ${medalColor}60` : 'none',
-                                                }}
-                                            >
-                                                #{rank}
-                                            </span>
+                                        {/* Desktop layout */}
+                                        <div className="hidden md:grid grid-cols-9 gap-4 items-center px-6 py-4">
+                                            {/* Rank — medal icon for top 3 */}
+                                            <div className="col-span-2 flex items-center gap-2">
+                                                {isTopThree ? (
+                                                    <Medal
+                                                        size={20}
+                                                        style={{ color: medalColor, filter: `drop-shadow(0 0 6px ${medalColor})` }}
+                                                    />
+                                                ) : null}
+                                                <span
+                                                    className="text-lg font-bold"
+                                                    style={{
+                                                        fontFamily: "'Orbitron', sans-serif",
+                                                        color: isTopThree ? medalColor : '#6b7280',
+                                                        textShadow: isTopThree ? `0 0 15px ${medalColor}60` : 'none',
+                                                    }}
+                                                >
+                                                    #{rank}
+                                                </span>
+                                            </div>
+                                            <div className="col-span-3">
+                                                <span className={`font-semibold ${isTopThree ? 'text-white' : 'text-gray-300'}`}>
+                                                    {entry.name || entry.citizenId || '—'}
+                                                </span>
+                                            </div>
+                                            <div className="col-span-2">
+                                                <span className="font-bold" style={{ fontFamily: "'Orbitron', sans-serif", color: '#F9A24D', fontSize: '0.9rem' }}>
+                                                    {(entry.totalScore || 0).toLocaleString()}
+                                                </span>
+                                                <span className="text-gray-500 text-xs ml-1">pts</span>
+                                            </div>
+                                            <div className="col-span-2 text-right">
+                                                <span className="px-3 py-1 rounded-full text-xs font-bold border" style={{ color: tierStyle.color, borderColor: tierStyle.borderColor, backgroundColor: tierStyle.bgColor }}>
+                                                    {tierName}
+                                                </span>
+                                            </div>
                                         </div>
 
-                                        {/* Name */}
-                                        <div className="col-span-3">
-                                            <span className={`font-semibold ${isTopThree ? 'text-white' : 'text-gray-300'}`}>
-                                                {entry.name || entry.citizenId || '—'}
-                                            </span>
-                                        </div>
-
-                                        {/* Points */}
-                                        <div className="col-span-2">
-                                            <span
-                                                className="font-bold"
-                                                style={{
-                                                    fontFamily: "'Orbitron', sans-serif",
-                                                    color: '#F9A24D',
-                                                    fontSize: '0.9rem',
-                                                }}
-                                            >
-                                                {(entry.totalScore || 0).toLocaleString()}
-                                            </span>
-                                            <span className="text-gray-500 text-xs ml-1">pts</span>
-                                        </div>
-
-                                        {/* Tier Badge — from DB */}
-                                        <div className="col-span-2 text-right">
-                                            <span
-                                                className="px-3 py-1 rounded-full text-xs font-bold border"
-                                                style={{
-                                                    color: tierStyle.color,
-                                                    borderColor: tierStyle.borderColor,
-                                                    backgroundColor: tierStyle.bgColor,
-                                                }}
-                                            >
-                                                {tierName}
-                                            </span>
+                                        {/* Mobile layout */}
+                                        <div className="flex md:hidden items-center gap-3 px-4 py-3">
+                                            {/* Rank */}
+                                            <div className="flex items-center gap-1 w-10 flex-shrink-0">
+                                                {isTopThree ? (
+                                                    <Medal size={16} style={{ color: medalColor, filter: `drop-shadow(0 0 4px ${medalColor})` }} />
+                                                ) : null}
+                                                <span
+                                                    className="text-sm font-bold"
+                                                    style={{
+                                                        fontFamily: "'Orbitron', sans-serif",
+                                                        color: isTopThree ? medalColor : '#6b7280',
+                                                    }}
+                                                >
+                                                    #{rank}
+                                                </span>
+                                            </div>
+                                            {/* Name */}
+                                            <div className="flex-1 min-w-0">
+                                                <span className={`font-semibold text-sm truncate block ${isTopThree ? 'text-white' : 'text-gray-300'}`}>
+                                                    {entry.name || entry.citizenId || '—'}
+                                                </span>
+                                            </div>
+                                            {/* Points */}
+                                            <div className="flex-shrink-0 text-right">
+                                                <span className="font-bold text-sm" style={{ fontFamily: "'Orbitron', sans-serif", color: '#F9A24D' }}>
+                                                    {(entry.totalScore || 0).toLocaleString()}
+                                                </span>
+                                                <span className="text-gray-500 text-xs ml-0.5">pts</span>
+                                            </div>
+                                            {/* Tier */}
+                                            <div className="flex-shrink-0">
+                                                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold border" style={{ color: tierStyle.color, borderColor: tierStyle.borderColor, backgroundColor: tierStyle.bgColor }}>
+                                                    {tierName}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 );
