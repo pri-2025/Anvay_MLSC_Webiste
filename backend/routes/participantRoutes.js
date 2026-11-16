@@ -3,6 +3,7 @@ const router = express.Router();
 const {
     getParticipants,
     getParticipantByUce,
+    updateScore,
     updateBonusScore,
     updateFinalProjectScore,
     completeRoom
@@ -10,6 +11,7 @@ const {
 
 router.get('/', getParticipants);
 router.get('/:uce', getParticipantByUce);
+router.put('/:uce/score', updateScore);
 router.put('/:uce/bonus', updateBonusScore);
 router.put('/:uce/finalproject', updateFinalProjectScore);
 router.put('/:uce/complete-room', completeRoom);

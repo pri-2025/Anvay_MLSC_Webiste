@@ -31,6 +31,7 @@ const mapRoomsForFrontend = (data) => {
         const completed = earnedPoints > 0;
 
         return {
+            id: def.id,
             name: def.name,
             description: def.description,
             completed,
@@ -52,6 +53,7 @@ const getParticipants = async (req, res, next) => {
             rank: index + 1,
             id: doc.citizenId,
             ...doc,
+            currentTier: calculateTier(doc.totalScore || 0)
         }));
         res.json(mapped);
     } catch (error) {
@@ -88,6 +90,46 @@ const getParticipantByUce = async (req, res, next) => {
     }
 };
 
+// @desc    Admin / Mentor updates room or bonus score directly
+// @route   PUT /api/participants/:uce/score
+const updateScore = async (req, res, next) => {
+    try {
+        const uce = req.params.uce.toUpperCase();
+        const { field, delta, value } = req.body; 
+        // field: 'bonusScore', 'room1', 'room2', 'room3', 'room4', 'room5', 'finalProjectScore'
+
+        const allowedFields = ['bonusScore', 'room1', 'room2', 'room3', 'room4', 'room5', 'finalProjectScore'];
+        const targetField = field && allowedFields.includes(field) ? field : 'bonusScore';
+
+        const doc = await Participant.findOne({ citizenId: uce });
+        if (!doc) return res.status(404).json({ message: 'Participant not found' });
+
+        if (delta !== undefined) {
+            doc[targetField] = Math.max(0, Number(doc[targetField] || 0) + Number(delta));
+        } else if (value !== undefined) {
+            doc[targetField] = Math.max(0, Number(value));
+        }
+
+        doc.totalScore = calcTotal(doc);
+        await doc.save();
+
+        res.json({
+            message: `${targetField} updated successfully`,
+            uce,
+            field: targetField,
+            newFieldValue: doc[targetField],
+            totalScore: doc.totalScore,
+            participant: {
+                id: doc.citizenId,
+                ...doc.toObject(),
+                currentTier: calculateTier(doc.totalScore)
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 // @desc    Mentor updates bonus score
 // @route   PUT /api/participants/:uce/bonus
 const updateBonusScore = async (req, res, next) => {
@@ -98,14 +140,24 @@ const updateBonusScore = async (req, res, next) => {
         const doc = await Participant.findOne({ citizenId: uce });
         if (!doc) return res.status(404).json({ message: 'Participant not found' });
 
-        const updatedData = { ...doc.toObject(), bonusScore: Number(bonusScore) };
+        const updatedData = { ...doc.toObject(), bonusScore: Math.max(0, Number(bonusScore)) };
         const totalScore = calcTotal(updatedData);
 
-        doc.bonusScore = Number(bonusScore);
+        doc.bonusScore = Math.max(0, Number(bonusScore));
         doc.totalScore = totalScore;
         await doc.save();
 
-        res.json({ message: 'Bonus score updated', uce, bonusScore, totalScore });
+        res.json({
+            message: 'Bonus score updated',
+            uce,
+            bonusScore: doc.bonusScore,
+            totalScore,
+            participant: {
+                id: doc.citizenId,
+                ...doc.toObject(),
+                currentTier: calculateTier(doc.totalScore)
+            }
+        });
     } catch (error) {
         next(error);
     }
@@ -121,14 +173,14 @@ const updateFinalProjectScore = async (req, res, next) => {
         const doc = await Participant.findOne({ citizenId: uce });
         if (!doc) return res.status(404).json({ message: 'Participant not found' });
 
-        const updatedData = { ...doc.toObject(), finalProjectScore: Number(finalProjectScore) };
+        const updatedData = { ...doc.toObject(), finalProjectScore: Math.max(0, Number(finalProjectScore)) };
         const totalScore = calcTotal(updatedData);
 
-        doc.finalProjectScore = Number(finalProjectScore);
+        doc.finalProjectScore = Math.max(0, Number(finalProjectScore));
         doc.totalScore = totalScore;
         await doc.save();
 
-        res.json({ message: 'Final project score updated', uce, finalProjectScore, totalScore });
+        res.json({ message: 'Final project score updated', uce, finalProjectScore: doc.finalProjectScore, totalScore });
     } catch (error) {
         next(error);
     }
@@ -168,6 +220,7 @@ const completeRoom = async (req, res, next) => {
 module.exports = {
     getParticipants,
     getParticipantByUce,
+    updateScore,
     updateBonusScore,
     updateFinalProjectScore,
     completeRoom,
